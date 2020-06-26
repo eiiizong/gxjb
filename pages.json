@@ -1,0 +1,30 @@
+{
+  "pages": [
+    {
+      "path": "pages/project/login/login",
+      "style": {
+        "navigationBarTitleText": "登陆"
+      }
+    }
+  ],
+  "globalStyle": {
+    "backgroundColor": "#ffffff",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "泸州老窖广宣监播程序",
+    "enablePullDownRefresh": false,
+    "backgroundTextStyle": "dark",
+    "navigationStyle": "default"
+  },
+  "condition": {
+    // 模式配置，仅开发期间生效
+    "current": 1, // 当前激活的模式(list 的索引项)
+    "list": [
+      {
+        "name": "test",
+        "path": "pages/project/login/login",
+        "query": ""
+      }
+    ]
+  }
+}
