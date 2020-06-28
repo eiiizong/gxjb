@@ -42,7 +42,7 @@
 
 <script>
 import yhButton from '@/components/yh-button/yh-button';
-import { request } from '../../../common/utils/uniApi';
+import { request,redirectTo } from '../../../common/utils/uniApi';
 
 import { GET_ACCESS_TOKEN } from '../../../store/types';
 import { mapGetters } from 'vuex';
@@ -73,6 +73,9 @@ export default {
     handleLogin() {
       console.log('登陆');
       this.changeBtnStatus(true)
+      setTimeout(() => {
+        redirectTo(`/pages/project/home/home`)
+      }, 1000)
     },
     // 改变按钮状态
     changeBtnStatus(bool) {

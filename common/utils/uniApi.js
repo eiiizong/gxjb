@@ -57,6 +57,23 @@ const request = (url, data, header = {}, method = 'GET') => {
 };
 
 /**
+ * 路由跳转 关闭当前页面，跳转到应用内的某个页面。但是不允许跳转到 tabbar 页面。
+ * @param {String} url  eg:'test?id=1&name=uniapp'
+ */
+const redirectTo = url => {
+  return new Promise((resolve, reject) => {
+    uni.redirectTo({
+      url,
+      success(res) {
+        resolve(res);
+      },
+      fail(err) {
+        reject(err);
+      },
+    });
+  });
+};
+/**
  *  ======================   以上api已根据微信官方接口确定注释参数类型    =======================
  */
 
@@ -504,12 +521,14 @@ const uniApi = {
   removeStorage,
   showModal,
   requestPayment,
+  redirectTo,
 };
 export default uniApi;
 export {
   request,
   makePhoneCall,
   navigateTo,
+  redirectTo,
   showToast,
   switchTab,
   getLocation,

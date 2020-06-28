@@ -208,6 +208,15 @@ button {
     box-shadow: 0rpx -6rpx 12rpx 0rpx rgba(30, 31, 32, 0.06);
     border-radius: 16rpx;
   }
+  &.zdy-btn-2 {
+    width: 170rpx;
+    height: 70rpx;
+    border: 1px solid #004b9f;
+    background-color: #fff;
+    color: #003383;
+    line-height: 44rpx;
+    border-radius: 8rpx;
+  }
   &.button-hover,
   &:active,
   &[disabled],

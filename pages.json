@@ -6,6 +6,18 @@
         "navigationBarTitleText": "登陆",
         "navigationStyle": "custom"
       }
+    },
+    {
+      "path": "pages/project/home/home",
+      "style": {
+        "navigationBarTitleText": "首页"
+      }
+    },
+    {
+      "path": "pages/project/upload/upload",
+      "style": {
+        "navigationBarTitleText": "上传巡检记录"
+      }
     }
   ],
   "globalStyle": {
@@ -23,7 +35,7 @@
     "list": [
       {
         "name": "test",
-        "path": "pages/project/login/login",
+        "path": "pages/project/home/home",
         "query": ""
       }
     ]
