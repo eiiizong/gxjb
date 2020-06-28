@@ -13,7 +13,7 @@
           <view>ID</view>
         </view>
         <view class="input">
-          <input type="text" placeholder="请输入手机号码" />
+          <input type="text" placeholder="请输入手机号码" v-model="account" />
         </view>
       </view>
       <view class="input-wrapper">
@@ -24,23 +24,41 @@
           <view>密码</view>
         </view>
         <view class="input">
-          <input type="text" placeholder="请输入密码" />
+          <input type="password" placeholder="请输入密码" v-model="password" />
         </view>
       </view>
+      <div class="button-wrapper">
+        <yhButton
+          className="zdy-btn"
+          @click="handleLogin"
+          :value="loginBtnText"
+          :disabled="loginBtnDisabled"
+          :loading="loginBtnIsLoading"
+        ></yhButton>
+      </div>
     </view>
   </view>
 </template>
 
 <script>
+import yhButton from '@/components/yh-button/yh-button';
 import { request } from '../../../common/utils/uniApi';
 
 import { GET_ACCESS_TOKEN } from '../../../store/types';
 import { mapGetters } from 'vuex';
 export default {
   name: 'login',
-  components: {},
+  components: {
+    yhButton,
+  },
   data() {
-    return {};
+    return {
+      account: '1234',
+      password: '334333',
+      loginBtnText: '登陆',
+      loginBtnIsLoading: false,
+      loginBtnDisabled: false,
+    };
   },
   // 监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参）
   onLoad() {},
@@ -50,7 +68,25 @@ export default {
   onShow() {},
   // 监听页面隐藏
   onHide() {},
-  methods: {},
+  methods: {
+    // 登陆 回调函数
+    handleLogin() {
+      console.log('登陆');
+      this.changeBtnStatus(true)
+    },
+    // 改变按钮状态
+    changeBtnStatus(bool) {
+      if (bool) {
+        this.loginBtnText = '登陆中...';
+        this.loginBtnIsLoading = true;
+        this.loginBtnDisabled = true;
+      } else {
+        this.loginBtnText = '登陆';
+        this.loginBtnIsLoading = false;
+        this.loginBtnDisabled = false;
+      }
+    },
+  },
   computed: {
     ...mapGetters([GET_ACCESS_TOKEN]),
   },
@@ -91,7 +127,38 @@ $border-radius: 32rpx;
       line-height: 56rpx;
       letter-spacing: 0px;
       color: #1e1f20;
+      margin-bottom: 62rpx;
     }
+  }
+  .input-wrapper {
+    margin-bottom: 28rpx;
+    .label {
+      font-size: 24rpx;
+      color: #4a4c4d;
+      display: flex;
+      align-items: center;
+      height: 34rpx;
+      line-height: 34rpx;
+      .img-box {
+        width: 24rpx;
+        height: 24rpx;
+        margin-right: 8rpx;
+      }
+    }
+    .input {
+      padding-top: 14rpx;
+      input {
+        height: 90rpx;
+        background-color: #f7f7f7;
+        border-radius: 16rpx;
+        font-size: 30rpx;
+        line-height: 1.2;
+        padding: 0 32rpx;
+      }
+    }
+  }
+  .button-wrapper {
+    padding-top: 32rpx;
   }
 }
 </style>
