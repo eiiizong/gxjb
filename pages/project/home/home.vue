@@ -2,7 +2,7 @@
   <view class="home">
     <div class="company-info">
       <div class="name">
-        成都大中华广告传播有限公司成都大中华广告传播有限公司
+        成都大中华广告传播有限公司
       </div>
       <div class="account">
         <div>ID：</div>
@@ -48,15 +48,18 @@
 
 <script>
 import yhButton from '@/components/yh-button/yh-button';
-import { request,redirectTo } from '../../../common/utils/uniApi';
+
+import {
+  request,
+  redirectTo,
+  hideHomeButton,
+} from '../../../common/utils/uniApi';
 
 import { GET_ACCESS_TOKEN } from '../../../store/types';
 import { mapGetters } from 'vuex';
 export default {
   name: 'home',
-  components: {
-    yhButton,
-  },
+  components: { yhButton },
   data() {
     return {
       account: '1234',
@@ -64,7 +67,9 @@ export default {
     };
   },
   // 监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参）
-  onLoad() {},
+  onLoad() {
+    hideHomeButton();
+  },
   // 监听页面初次渲染完成
   onReady() {},
   // 监听页面显示
@@ -75,12 +80,12 @@ export default {
     // 退出登陆 回调函数
     handleLoginOut() {
       console.log('退出登陆');
-      redirectTo(`/pages/project/login/login?type=loginOut`)
+      redirectTo(`/pages/project/login/login?type=loginOut`);
     },
     // 创建新的巡检记录 回调函数
     handleCreateNewRecord() {
       console.log('创建新的巡检记录');
-      redirectTo(`/pages/project/upload/upload`)
+      redirectTo(`/pages/project/upload/upload`);
     },
   },
   computed: {

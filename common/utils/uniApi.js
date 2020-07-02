@@ -73,9 +73,28 @@ const redirectTo = url => {
     });
   });
 };
+
+/**
+ * 隐藏返回首页按钮
+ */
+const hideHomeButton = () => {
+  return new Promise((resolve, reject) => {
+    uni.hideHomeButton({
+      success(res) {
+        resolve(res);
+      },
+      fail(err) {
+        reject(err);
+      },
+    });
+  });
+};
+
 /**
  *  ======================   以上api已根据微信官方接口确定注释参数类型    =======================
  */
+
+
 
 /**
  * 拨打电话
@@ -496,39 +515,13 @@ const requestPayment = (timeStamp, nonceStr, zdyPackage, signType, paySign) => {
   });
 };
 
-const uniApi = {
-  request,
-  makePhoneCall,
-  navigateTo,
-  showToast,
-  switchTab,
-  getLocation,
-  chooseLocation,
-  openLocation,
-  chooseImage,
-  previewImage,
-  setNavigationBarTitle,
-  setNavigationBarColor,
-  setTabBarBadge,
-  removeTabBarBadge,
-  getSystemInfo,
-  navigateBack,
-  getUserInfo,
-  login,
-  setStorage,
-  getStorage,
-  clearStorage,
-  removeStorage,
-  showModal,
-  requestPayment,
-  redirectTo,
-};
-export default uniApi;
 export {
   request,
+  redirectTo,
+  hideHomeButton,
+  
   makePhoneCall,
   navigateTo,
-  redirectTo,
   showToast,
   switchTab,
   getLocation,
