@@ -52,6 +52,7 @@ import yhButton from '@/components/yh-button/yh-button';
 import {
   request,
   redirectTo,
+  navigateTo,
   hideHomeButton,
 } from '../../../common/utils/uniApi';
 
@@ -85,7 +86,7 @@ export default {
     // 创建新的巡检记录 回调函数
     handleCreateNewRecord() {
       console.log('创建新的巡检记录');
-      redirectTo(`/pages/project/upload/upload`);
+      navigateTo(`/pages/project/upload/upload`);
     },
   },
   computed: {

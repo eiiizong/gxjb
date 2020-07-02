@@ -75,6 +75,24 @@ const redirectTo = url => {
 };
 
 /**
+ * 保留当前页面，跳转到应用内的某个页面。但是不能跳到 tabbar 页面。使用 wx.navigateBack 可以返回到原页面。小程序中页面栈最多十层
+ * @param {String} url  eg:'test?id=1&name=uniapp'
+ */
+const navigateTo = url => {
+  return new Promise((resolve, reject) => {
+    uni.navigateTo({
+      url,
+      success(res) {
+        resolve(res);
+      },
+      fail(err) {
+        reject(err);
+      },
+    });
+  });
+};
+
+/**
  * 隐藏返回首页按钮
  */
 const hideHomeButton = () => {
@@ -113,23 +131,7 @@ const makePhoneCall = phoneNumber => {
     });
   });
 };
-/**
- * 路由跳转
- * @param {String} url  eg:'test?id=1&name=uniapp'
- */
-const navigateTo = url => {
-  return new Promise((resolve, reject) => {
-    uni.navigateTo({
-      url,
-      success(res) {
-        resolve(res);
-      },
-      fail(err) {
-        reject(err);
-      },
-    });
-  });
-};
+
 /**
  * 路由跳转
  * @param {String} url  需要跳转的 tabBar 页面的路径（需在 pages.json 的 tabBar 字段定义的页面），路径后不能带参数
@@ -517,11 +519,11 @@ const requestPayment = (timeStamp, nonceStr, zdyPackage, signType, paySign) => {
 
 export {
   request,
+  navigateTo,
   redirectTo,
   hideHomeButton,
   
   makePhoneCall,
-  navigateTo,
   showToast,
   switchTab,
   getLocation,

@@ -34,8 +34,18 @@
     "current": 1, // 当前激活的模式(list 的索引项)
     "list": [
       {
-        "name": "test",
+        "name": "login",
+        "path": "pages/project/login/login",
+        "query": ""
+      },
+      {
+        "name": "home",
         "path": "pages/project/home/home",
+        "query": ""
+      },
+      {
+        "name": "upload",
+        "path": "pages/project/upload/upload",
         "query": ""
       }
     ]

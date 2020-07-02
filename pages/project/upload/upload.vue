@@ -1,6 +1,35 @@
 <template>
   <view class="upload">
-    创建新的巡检记录
+    <div class="top">
+      <div class="cell time">
+        <div class="name">巡检时间</div>
+        <div class="value">2020年6月18日 11：20：20</div>
+      </div>
+      <div class="cell address">
+        <div class="name">巡检地点</div>
+        <div class="select-address-wrapper">
+          <picker class="picker-wrapper">
+            <div class="picker">
+              <div class="text">四川省成都市锦江区</div>
+              <div class="icon icon-arrow-right"></div>
+            </div>
+          </picker>
+        </div>
+        <div class="input-address-wrapper">
+          <input class="input" placeholder="请输入详细地址" />
+        </div>
+      </div>
+    </div>
+    <div class="center"></div>
+    <div class="bottom">
+      <div class="button-wrapper">
+        <yhButton
+          className="zdy-btn"
+          @click="handleUpload"
+          value="开始上传"
+        ></yhButton>
+      </div>
+    </div>
   </view>
 </template>
 
@@ -29,23 +58,9 @@ export default {
   // 监听页面隐藏
   onHide() {},
   methods: {
-    // 登陆 回调函数
-    handleLogin() {
-      console.log('登陆');
-      this.changeBtnStatus(true)
-    },
-    // 改变按钮状态
-    changeBtnStatus(bool) {
-      if (bool) {
-        this.loginBtnText = '登陆中...';
-        this.loginBtnIsLoading = true;
-        this.loginBtnDisabled = true;
-      } else {
-        this.loginBtnText = '登陆';
-        this.loginBtnIsLoading = false;
-        this.loginBtnDisabled = false;
-      }
-    },
+    handleUpload() {
+
+    }
   },
   computed: {
     ...mapGetters([GET_ACCESS_TOKEN]),
@@ -55,10 +70,77 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$top-image-height: 470rpx;
-$border-radius: 32rpx;
+$border-color: #e8e8e8;
 .upload {
   position: relative;
-  
+  padding-bottom: 210rpx;
+  .top {
+    border-bottom: 1px solid $border-color;
+    padding-left: 36rpx;
+    position: relative;
+    .cell {
+      padding: 30rpx 0 26rpx;
+      .name {
+        font-size: 32rpx;
+        color: #1e1f20;
+        line-height: 44rpx;
+      }
+      .value {
+        font-size: 30rpx;
+        color: #787979;
+        line-height: 42rpx;
+        padding-top: 26rpx;
+      }
+    }
+    .time {
+      border-bottom: 1px solid $border-color;
+    }
+    .input-address-wrapper {
+      margin-top: 30rpx;
+      padding-right: 36rpx;
+      .input {
+        font-size: 30rpx;
+        line-height: 1.2;
+        color: #787979;
+        height: 90rpx;
+        background-color: #f7f7f7;
+        border-radius: 16rpx;
+        padding: 0 24rpx;
+      }
+    }
+    .select-address-wrapper {
+      padding-right: 36rpx;
+      margin-top: 24rpx;
+      .picker {
+        width: 100%;
+        font-size: 30rpx;
+        line-height: 1.2;
+        color: #787979;
+        height: 90rpx;
+        background-color: #f7f7f7;
+        border-radius: 16rpx;
+        padding: 0 24rpx;
+        padding-right: 60rpx;
+        position: relative;
+        display: flex;
+        align-items: center;
+        .icon {
+          position: absolute;
+          top: 50%;
+          right: 24rpx;
+          transform: translateY(-50%);
+        }
+      }
+    }
+  }
+  .bottom {
+    position: absolute;
+    bottom: 80rpx;
+    left: 0;
+    width: 100%;
+    .button-wrapper {
+      padding: 0 36rpx;
+    }
+  }
 }
 </style>
