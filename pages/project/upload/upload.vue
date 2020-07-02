@@ -87,7 +87,6 @@ export default {
     // 视频上传 回调
     handleUploadVideoChange(video) {
       console.log('handleUploadVideoChange', video);
-      navigateTo(`/pages/project/recordVideo/recordVideo`)
     },
   },
   computed: {

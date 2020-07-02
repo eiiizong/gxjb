@@ -59,7 +59,7 @@ const request = (url, data, header = {}, method = 'GET') => {
 /**
  * 路由跳转 关闭当前页面，跳转到应用内的某个页面。但是不允许跳转到 tabbar 页面。
  * eg:'/pages/test/test?id=1&name=uniapp'
- * @param {String} url 
+ * @param {String} url
  */
 const redirectTo = url => {
   return new Promise((resolve, reject) => {
@@ -78,7 +78,7 @@ const redirectTo = url => {
 /**
  * 保留当前页面，跳转到应用内的某个页面。但是不能跳到 tabbar 页面。使用 wx.navigateBack 可以返回到原页面。小程序中页面栈最多十层
  * eg:'/pages/test/test?id=1&name=uniapp'
- * @param {String} url  
+ * @param {String} url
  */
 const navigateTo = url => {
   return new Promise((resolve, reject) => {
@@ -156,11 +156,73 @@ const previewImage = (current, urls) => {
   });
 };
 
+/**
+ * 拍摄视频或从手机相册中选视频。
+ * @param {Boolean} compressed 是否压缩所选择的视频文件
+ * @param {Number} maxDuration 拍摄视频最长拍摄时间，单位秒
+ * @param {Array<String>} sourceType 视频选择的来源
+ * @param {String} camera
+ */
+const chooseVideo = (
+  sourceType = ['album', 'camera'],
+  compressed = true,
+  maxDuration = 60,
+  camera = 'back'
+) => {
+  return new Promise((resolve, reject) => {
+    uni.chooseVideo({
+      compressed,
+      sourceType,
+      maxDuration,
+      camera,
+      success(res) {
+        resolve(res);
+      },
+      fail(err) {
+        reject(err);
+      },
+    });
+  });
+};
+
+/**
+ * 拍摄或从手机相册中选择图片或视频。
+ * @param {Number} count 
+ * @param {Array<String>} mediaType 
+ * @param {Array<String>} sourceType 
+ * @param {Number} maxDuration 
+ * @param {Array<String>} sizeType 
+ * @param {String} camera
+ */
+const chooseMedia = (
+  count = 9,
+  mediaType = ['image', 'video'],
+  sourceType = ['album', 'camera'],
+  maxDuration = 30,
+  sizeType = "['original', 'compressed']",
+  camera = 'back'
+) => {
+  return new Promise((resolve, reject) => {
+    uni.chooseMedia({
+      count,
+      mediaType,
+      sizeType,
+      sourceType,
+      maxDuration,
+      camera,
+      success(res) {
+        resolve(res);
+      },
+      fail(err) {
+        reject(err);
+      },
+    });
+  });
+};
 
 /**
  *  ======================   以上api已根据微信官方接口确定注释参数类型    =======================
  */
-
 
 /**
  * 拨打电话
@@ -527,7 +589,8 @@ export {
   hideHomeButton,
   chooseImage,
   previewImage,
-
+  chooseVideo,
+  chooseMedia,
   makePhoneCall,
   showToast,
   switchTab,

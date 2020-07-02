@@ -8,9 +8,24 @@
     </div>
     <div class="list">
       <template v-if="videoData && videoData.length > 0">
-        有视频
+        <template v-for="(item, index) in videoData">
+          <div class="video-box" :key="item.id">
+            <video
+              class="video"
+              :src="item.tempFilePath"
+              :duration="item.duration"
+              :poster="item.thumbTempFilePath"
+              enable-play-gesture
+              enable-auto-rotation
+            ></video>
+            <div class="delete" @click.stop="handleDelete(index)">
+              <div class="icon icon-delete"></div>
+            </div>
+          </div>
+        </template>
       </template>
       <div
+        v-else
         class="upload-button"
         :style="uploadButtonStyle"
         @click="handleVideo"
@@ -23,7 +38,7 @@
 /**
  * 上传视频
  */
-import { chooseImage, previewImage } from '../../common/utils/uniApi';
+import { chooseMedia } from '../../common/utils/uniApi';
 export default {
   name: 'yhUploadVideo',
   props: {
@@ -46,7 +61,26 @@ export default {
   methods: {
     // 上传视频 回调函数
     handleVideo() {
-      this.$emit('change');
+      chooseMedia(1, ['video'], ['camera'], 30, ['original'], 'back')
+        .then(res => {
+          console.log('接口调用成功', res);
+          const files = {
+            ...res.tempFiles[0],
+            id: 'yh_' + +new Date(),
+          };
+          this.videoData = [].concat(this.videoData).concat(files);
+          this.$emit('change', this.videoData);
+        })
+        .catch(err => {
+          console.log('接口调用失败', err);
+        });
+    },
+    // 删除视频
+    handleDelete(index) {
+      const data = [].concat(this.videoData);
+      data.splice(index, 1);
+      this.videoData = [].concat(data);
+      this.$emit('change', this.videoData);
     },
   },
   computed: {
@@ -83,6 +117,40 @@ $boder-radius: 16rpx;
     .hint {
       font-size: 26rpx;
       color: #b99f4e;
+    }
+  }
+  .video-box {
+    width: 210rpx;
+    height: 210rpx;
+    margin-bottom: 24rpx;
+    margin-right: 24rpx;
+    display: flex;
+    position: relative;
+    border-radius: $boder-radius;
+    border: solid 1rpx #f7f7f7;
+    background-color: #f7f7f7;
+    overflow: hidden;
+    .video {
+      width: 100%;
+      height: 100%;
+      border-radius: $boder-radius;
+    }
+    .delete {
+      display: flex;
+      width: 50rpx;
+      height: 50rpx;
+      background-color: #003383;
+      border-top-right-radius: $boder-radius;
+      border-bottom-left-radius: $boder-radius;
+      position: absolute;
+      top: 0;
+      right: 0;
+      .icon-delete {
+        margin: auto;
+      }
+    }
+    &:nth-of-type(3n) {
+      margin-right: 0;
     }
   }
   .list {
