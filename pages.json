@@ -18,6 +18,20 @@
       "style": {
         "navigationBarTitleText": "上传巡检记录"
       }
+    },
+    {
+      "path": "pages/project/recordVideo/recordVideo",
+      "style": {
+        "navigationBarTitleText": "录制视频",
+        "navigationStyle": "custom"
+      }
+    }
+    ,
+    {
+      "path": "pages/project/uploadResult/uploadResult",
+      "style": {
+        "navigationBarTitleText": "上传结果"
+      }
     }
   ],
   "globalStyle": {

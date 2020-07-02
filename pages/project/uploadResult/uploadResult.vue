@@ -1,5 +1,5 @@
 <template>
-  <view class="upload">
+  <view class="upload-result">
     <div class="top">
       <div class="cell time">
         <div class="name">巡检时间</div>
@@ -34,31 +34,20 @@
         ></yhUploadVideo>
       </div>
     </div>
-    <div class="bottom">
-      <div class="button-wrapper">
-        <yhButton
-          className="zdy-btn"
-          @click="handleUpload"
-          value="开始上传"
-        ></yhButton>
-      </div>
-    </div>
   </view>
 </template>
 
 <script>
-import yhButton from '@/components/yh-button/yh-button';
 import yhUploadImages from '@/components/yh-upload-images/yh-upload-images';
 import yhUploadVideo from '@/components/yh-upload-video/yh-upload-video';
 
-import { request,navigateTo } from '../../../common/utils/uniApi';
+import { request } from '../../../common/utils/uniApi';
 
 import { GET_ACCESS_TOKEN } from '../../../store/types';
 import { mapGetters } from 'vuex';
 export default {
   name: 'upload',
   components: {
-    yhButton,
     yhUploadImages,
     yhUploadVideo,
   },
@@ -77,9 +66,7 @@ export default {
   onHide() {},
   methods: {
     // 上传按钮 回调函数
-    handleUpload() {
-      navigateTo(`/pages/project/uploadResult/uploadResult`)
-    },
+    handleUpload() {},
     // 图片上传 回调
     handleUploadImagesChange(images) {
       console.log('handleUploadImagesChange', images);
@@ -87,7 +74,6 @@ export default {
     // 视频上传 回调
     handleUploadVideoChange(video) {
       console.log('handleUploadVideoChange', video);
-      navigateTo(`/pages/project/recordVideo/recordVideo`)
     },
   },
   computed: {
@@ -99,7 +85,7 @@ export default {
 
 <style lang="scss" scoped>
 $border-color: #e8e8e8;
-.upload {
+.upload-result {
   position: relative;
   padding-bottom: 210rpx;
   .top {

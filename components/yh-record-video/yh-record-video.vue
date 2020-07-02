@@ -145,6 +145,7 @@ export default {
 view,
 text {
   box-sizing: border-box;
+  box-sizing: border-box;
 }
 .yh-record-video-wrapper {
   width: 100%;
