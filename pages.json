@@ -20,14 +20,6 @@
       }
     },
     {
-      "path": "pages/project/recordVideo/recordVideo",
-      "style": {
-        "navigationBarTitleText": "录制视频",
-        "navigationStyle": "custom"
-      }
-    }
-    ,
-    {
       "path": "pages/project/uploadResult/uploadResult",
       "style": {
         "navigationBarTitleText": "上传结果"
@@ -60,6 +52,11 @@
       {
         "name": "upload",
         "path": "pages/project/upload/upload",
+        "query": ""
+      },
+      {
+        "name": "uploadResult",
+        "path": "pages/project/uploadResult/uploadResult",
         "query": ""
       }
     ]
