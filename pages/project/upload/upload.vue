@@ -20,7 +20,17 @@
         </div>
       </div>
     </div>
-    <div class="center"></div>
+    <div class="center">
+      <div class="upload-images">
+        <yhUploadImages
+          :totalUploadNum="3"
+          @change="handleUploadImagesChange"
+        ></yhUploadImages>
+      </div>
+      <div class="upload-video">
+        <!-- <yhUploadImages></yhUploadImages> -->
+      </div>
+    </div>
     <div class="bottom">
       <div class="button-wrapper">
         <yhButton
@@ -35,6 +45,8 @@
 
 <script>
 import yhButton from '@/components/yh-button/yh-button';
+import yhUploadImages from '@/components/yh-upload-images/yh-upload-images';
+
 import { request } from '../../../common/utils/uniApi';
 
 import { GET_ACCESS_TOKEN } from '../../../store/types';
@@ -43,6 +55,7 @@ export default {
   name: 'upload',
   components: {
     yhButton,
+    yhUploadImages,
   },
   data() {
     return {
@@ -58,9 +71,10 @@ export default {
   // 监听页面隐藏
   onHide() {},
   methods: {
-    handleUpload() {
-
-    }
+    handleUpload() {},
+    handleUploadImagesChange(images) {
+      console.log('handleUploadImagesChange', images);
+    },
   },
   computed: {
     ...mapGetters([GET_ACCESS_TOKEN]),
@@ -131,6 +145,13 @@ $border-color: #e8e8e8;
           transform: translateY(-50%);
         }
       }
+    }
+  }
+  .center {
+    width: 100%;
+    .upload-images {
+      padding: 12rpx 36rpx;
+      border-bottom: 1px solid $border-color;
     }
   }
   .bottom {

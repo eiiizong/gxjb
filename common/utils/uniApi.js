@@ -58,7 +58,8 @@ const request = (url, data, header = {}, method = 'GET') => {
 
 /**
  * 路由跳转 关闭当前页面，跳转到应用内的某个页面。但是不允许跳转到 tabbar 页面。
- * @param {String} url  eg:'test?id=1&name=uniapp'
+ * eg:'/pages/test/test?id=1&name=uniapp'
+ * @param {String} url 
  */
 const redirectTo = url => {
   return new Promise((resolve, reject) => {
@@ -76,7 +77,8 @@ const redirectTo = url => {
 
 /**
  * 保留当前页面，跳转到应用内的某个页面。但是不能跳到 tabbar 页面。使用 wx.navigateBack 可以返回到原页面。小程序中页面栈最多十层
- * @param {String} url  eg:'test?id=1&name=uniapp'
+ * eg:'/pages/test/test?id=1&name=uniapp'
+ * @param {String} url  
  */
 const navigateTo = url => {
   return new Promise((resolve, reject) => {
@@ -109,9 +111,55 @@ const hideHomeButton = () => {
 };
 
 /**
+ * 从本地相册选择图片或使用相机拍照。
+ * @param {Number} count
+ * @param {Array<String>} sizeType
+ * @param {Array<String>} sourceType
+ */
+const chooseImage = (
+  count = 9,
+  sizeType = ['original', 'compressed'],
+  sourceType = ['album', 'camera']
+) => {
+  return new Promise((resolve, reject) => {
+    uni.chooseImage({
+      count,
+      sizeType,
+      sourceType,
+      success(res) {
+        resolve(res);
+      },
+      fail(err) {
+        reject(err);
+      },
+    });
+  });
+};
+
+/**
+ * 在新页面中全屏预览图片。预览的过程中用户可以进行保存图片、发送给朋友等操作。
+ * @param {String} current
+ * @param {Array<String>} urls
+ */
+const previewImage = (current, urls) => {
+  return new Promise((resolve, reject) => {
+    uni.previewImage({
+      current,
+      urls,
+      success(res) {
+        resolve(res);
+      },
+      fail(err) {
+        reject(err);
+      },
+    });
+  });
+};
+
+
+/**
  *  ======================   以上api已根据微信官方接口确定注释参数类型    =======================
  */
-
 
 
 /**
@@ -213,51 +261,6 @@ const openLocation = (latitude, longitude, name, address, scale = 18) => {
   });
 };
 
-/**
- * 从本地相册选择图片或使用相机拍照。
- * @param {Number} count
- * @param {*} sizeType
- * @param {*} sourceType
- */
-const chooseImage = (
-  count = 9,
-  sizeType = ['original', 'compressed'],
-  sourceType = ['album', 'camera']
-) => {
-  return new Promise((resolve, reject) => {
-    uni.chooseImage({
-      count,
-      sizeType,
-      sourceType,
-      success(res) {
-        resolve(res);
-      },
-      fail(err) {
-        reject(err);
-      },
-    });
-  });
-};
-
-/**
- * 预览图片
- * @param {String|Number} current
- * @param {Array<String>} urls
- */
-const previewImage = (current, urls) => {
-  return new Promise((resolve, reject) => {
-    uni.previewImage({
-      current,
-      urls,
-      success(res) {
-        resolve(res);
-      },
-      fail(err) {
-        reject(err);
-      },
-    });
-  });
-};
 /**
  * 动态设置当前页面的标题。
  * @param {*} title
@@ -522,15 +525,15 @@ export {
   navigateTo,
   redirectTo,
   hideHomeButton,
-  
+  chooseImage,
+  previewImage,
+
   makePhoneCall,
   showToast,
   switchTab,
   getLocation,
   chooseLocation,
   openLocation,
-  chooseImage,
-  previewImage,
   setNavigationBarTitle,
   setNavigationBarColor,
   setTabBarBadge,
