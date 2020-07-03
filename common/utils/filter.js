@@ -13,4 +13,33 @@ Vue.filter('FormatPhoneNumbere', function (value) {
   return value;
 });
 
+// 格式化时间 将 newData 转化为
+Vue.filter('FormatDate', function (date) {
+  // 如果为空 则返回空字符串
+  if (!date) {
+    return '';
+  }
+  let year = date.getFullYear();
+  let month = date.getMonth() + 1;
+  let day = date.getDate();
+  let hours = date.getHours();
+  let minute = date.getMinutes();
+  let second = date.getSeconds();
+  if (month < 10) {
+    month = '0' + month;
+  }
+  if (day < 10) {
+    day = '0' + day;
+  }
+  if (hours < 10) {
+    hours = '0' + hours;
+  }
+  if (minute < 10) {
+    minute = '0' + minute;
+  }
+  if (second < 10) {
+    second = '0' + second;
+  }
+  return `${year}年${month}月${day}日 ${hours}:${minute}:${second}`;
+});
 export default Vue;

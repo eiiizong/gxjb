@@ -3,7 +3,7 @@
     <div class="top">
       <div class="cell time">
         <div class="name">巡检时间</div>
-        <div class="value">2020年6月18日 11：20：20</div>
+        <div class="value">{{ nowTime | FormatDate }}</div>
       </div>
       <div class="cell address">
         <div class="name">巡检地点</div>
@@ -51,7 +51,7 @@ import yhButton from '@/components/yh-button/yh-button';
 import yhUploadImages from '@/components/yh-upload-images/yh-upload-images';
 import yhUploadVideo from '@/components/yh-upload-video/yh-upload-video';
 
-import { request,navigateTo } from '../../../common/utils/uniApi';
+import { request, navigateTo } from '../../../common/utils/uniApi';
 
 import { GET_ACCESS_TOKEN } from '../../../store/types';
 import { mapGetters } from 'vuex';
@@ -65,6 +65,7 @@ export default {
   data() {
     return {
       account: '1234',
+      nowTime: new Date(),
     };
   },
   // 监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参）
@@ -78,7 +79,7 @@ export default {
   methods: {
     // 上传按钮 回调函数
     handleUpload() {
-      navigateTo(`/pages/project/uploadResult/uploadResult`)
+      navigateTo(`/pages/project/uploadResult/uploadResult`);
     },
     // 图片上传 回调
     handleUploadImagesChange(images) {
