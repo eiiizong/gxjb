@@ -64,7 +64,7 @@ export default {
   },
   data() {
     return {
-      account: '1234',
+      address: '',
       nowTime: new Date(),
     };
   },

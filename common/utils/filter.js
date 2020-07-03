@@ -13,7 +13,7 @@ Vue.filter('FormatPhoneNumbere', function (value) {
   return value;
 });
 
-// 格式化时间 将 newData 转化为
+// 格式化时间 将 newData 转化为 2020年07月03日 13:45:56
 Vue.filter('FormatDate', function (date) {
   // 如果为空 则返回空字符串
   if (!date) {
