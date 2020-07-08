@@ -12,6 +12,19 @@ Vue.filter('FormatPhoneNumbere', function (value) {
   value = value.substr(0, 3) + '****' + value.substr(7, 11);
   return value;
 });
+// 格式化地址 将 ['四川省', '成都市', '锦江区'] 转化为 四川省成都市锦江区
+Vue.filter('FormatAddress', function (value) {
+  if (!value || value.length < 1) {
+    return '';
+  }
+  let str = '';
+  value.map((item) => {
+    if (item) {
+      str += item;
+    }
+  });
+  return str;
+});
 
 // 格式化时间 将 newData 转化为 2020年07月03日 13:45:56
 Vue.filter('FormatDate', function (date) {

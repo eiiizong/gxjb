@@ -8,9 +8,9 @@
       <div class="cell address">
         <div class="name">巡检地点</div>
         <div class="select-address-wrapper">
-          <picker class="picker-wrapper">
+          <picker class="picker-wrapper" mode="region" :value="addressRegion" @change="handlePickerRegionChange">
             <div class="picker">
-              <div class="text">四川省成都市锦江区</div>
+              <div class="text">{{ addressRegion | FormatAddress }}</div>
               <div class="icon icon-arrow-right"></div>
             </div>
           </picker>
@@ -66,6 +66,8 @@ export default {
     return {
       address: '',
       nowTime: new Date(),
+      // 省市区
+      addressRegion: ['四川省', '成都市', '锦江区'],
     };
   },
   // 监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参）
@@ -89,6 +91,10 @@ export default {
     handleUploadVideoChange(video) {
       console.log('handleUploadVideoChange', video);
     },
+    // picker 地址选择 change
+    handlePickerRegionChange(e) {
+      this.addressRegion = [].concat(e.detail.value)
+    }
   },
   computed: {
     ...mapGetters([GET_ACCESS_TOKEN]),
