@@ -42,19 +42,19 @@
 
 <script>
 import yhButton from '@/components/yh-button/yh-button';
-import { request,redirectTo } from '../../../common/utils/uniApi';
+import { request, redirectTo, login } from '../../../common/utils/uniApi';
 
-import { GET_ACCESS_TOKEN } from '../../../store/types';
-import { mapGetters } from 'vuex';
+import { CHANGE_ACCESS_TOKEN } from '../../../store/types';
+// import { mapGetters } from 'vuex';
 export default {
   name: 'login',
   components: {
-    yhButton
+    yhButton,
   },
   data() {
     return {
-      account: '1234',
-      password: '334333',
+      account: '18482160090',
+      password: '5201314',
       loginBtnText: '登陆',
       loginBtnIsLoading: false,
       loginBtnDisabled: false,
@@ -72,10 +72,8 @@ export default {
     // 登陆 回调函数
     handleLogin() {
       console.log('登陆');
-      this.changeBtnStatus(true)
-      setTimeout(() => {
-        redirectTo(`/pages/project/home/home`)
-      }, 1000)
+      this.changeBtnStatus(true);
+      this.requestWechatLogin();
     },
     // 改变按钮状态
     changeBtnStatus(bool) {
@@ -89,10 +87,37 @@ export default {
         this.loginBtnDisabled = false;
       }
     },
+    // 登陆请求
+    requestLogin(code) {
+      const url = 'login';
+      const header = {
+        code,
+      };
+      const data = {
+        phone: this.account,
+        password: this.password,
+      };
+      const method = 'POST';
+      request(url, data, header, method)
+        .then((res) => {
+          const { access_token } = res;
+          if (access_token) {
+            this.$store.commit(CHANGE_ACCESS_TOKEN, access_token);
+          }
+          redirectTo(`/pages/project/home/home`);
+        })
+        .catch((err) => {});
+    },
+    // 微信小程序 login
+    requestWechatLogin() {
+      login()
+        .then((res) => {
+          this.requestLogin(res);
+        })
+        .catch((err) => {});
+    },
   },
-  computed: {
-    ...mapGetters([GET_ACCESS_TOKEN]),
-  },
+  computed: {},
   watch: {},
 };
 </script>

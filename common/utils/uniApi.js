@@ -2,6 +2,28 @@
 
 import config from '../../config';
 
+/**
+ * 调用接口获取登录凭证（code）。通过凭证进而换取用户登录态信息，包括用户的唯一标识（openid）及本次登录的会话密钥（session_key）等。用户数据的加解密通讯需要依赖会话密钥完成。
+ * @param {Number} timeout 默认 6000ms 超时时间
+ */
+const login = (timeout = 6000) => {
+  return new Promise((resolve, reject) => {
+    uni.login({
+      timeout,
+      success(res) {
+        if (res.code) {
+          resolve(res.code);
+        } else {
+          reject(res);
+        }
+      },
+      fail(err) {
+        reject(err);
+      },
+    });
+  });
+};
+
 // const uni = uni;
 
 /**
@@ -27,10 +49,10 @@ const request = (url, data, header = {}, method = 'GET') => {
       data,
       header,
       method,
-      success: res => {
+      success: (res) => {
         const resData = res.data;
         // 请求成功 状态码为200 &&
-        if (res.statusCode === 200 && resData && resData.status === '200') {
+        if (res.statusCode === 200 && resData && resData.status === 200) {
           console.log(`
             请求地址${url},数据返回结果:
             ${resData.data}
@@ -45,7 +67,7 @@ const request = (url, data, header = {}, method = 'GET') => {
           reject(res);
         }
       },
-      fail: err => {
+      fail: (err) => {
         console.log(`
           请求地址${url},数据返回结果:
           ${err}
@@ -61,7 +83,7 @@ const request = (url, data, header = {}, method = 'GET') => {
  * eg:'/pages/test/test?id=1&name=uniapp'
  * @param {String} url
  */
-const redirectTo = url => {
+const redirectTo = (url) => {
   return new Promise((resolve, reject) => {
     uni.redirectTo({
       url,
@@ -80,7 +102,7 @@ const redirectTo = url => {
  * eg:'/pages/test/test?id=1&name=uniapp'
  * @param {String} url
  */
-const navigateTo = url => {
+const navigateTo = (url) => {
   return new Promise((resolve, reject) => {
     uni.navigateTo({
       url,
@@ -187,11 +209,11 @@ const chooseVideo = (
 
 /**
  * 拍摄或从手机相册中选择图片或视频。
- * @param {Number} count 
- * @param {Array<String>} mediaType 
- * @param {Array<String>} sourceType 
- * @param {Number} maxDuration 
- * @param {Array<String>} sizeType 
+ * @param {Number} count
+ * @param {Array<String>} mediaType
+ * @param {Array<String>} sourceType
+ * @param {Number} maxDuration
+ * @param {Array<String>} sizeType
  * @param {String} camera
  */
 const chooseMedia = (
@@ -228,7 +250,7 @@ const chooseMedia = (
  * 拨打电话
  * @param {String} phoneNumber 电话号码
  */
-const makePhoneCall = phoneNumber => {
+const makePhoneCall = (phoneNumber) => {
   return new Promise((resolve, reject) => {
     uni.makePhoneCall({
       phoneNumber,
@@ -246,7 +268,7 @@ const makePhoneCall = phoneNumber => {
  * 路由跳转
  * @param {String} url  需要跳转的 tabBar 页面的路径（需在 pages.json 的 tabBar 字段定义的页面），路径后不能带参数
  */
-const switchTab = url => {
+const switchTab = (url) => {
   return new Promise((resolve, reject) => {
     uni.switchTab({
       url,
@@ -327,7 +349,7 @@ const openLocation = (latitude, longitude, name, address, scale = 18) => {
  * 动态设置当前页面的标题。
  * @param {*} title
  */
-const setNavigationBarTitle = title => {
+const setNavigationBarTitle = (title) => {
   return new Promise((resolve, reject) => {
     uni.setNavigationBarTitle({
       title,
@@ -387,7 +409,7 @@ const setTabBarBadge = (index, text) => {
  * @param {Number} index  abBar的哪一项，从左边0算起
  * @param {String} text  显示的文本
  */
-const removeTabBarBadge = index => {
+const removeTabBarBadge = (index) => {
   return new Promise((resolve, reject) => {
     uni.removeTabBarBadge({
       index,
@@ -441,35 +463,7 @@ const getUserInfo = (lang = 'en', withCredentials = false) => {
     });
   });
 };
-const login = () => {
-  return new Promise((resolve, reject) => {
-    uni.login({
-      success(res) {
-        if (res.code) {
-          request(
-            'login',
-            {},
-            {
-              code: res.code,
-            },
-            'POST'
-          )
-            .then(res => {
-              resolve(res);
-            })
-            .catch(err => {
-              reject(err);
-            });
-        } else {
-          reject(res);
-        }
-      },
-      fail(err) {
-        reject(err);
-      },
-    });
-  });
-};
+
 const setStorage = (key, data) => {
   return new Promise((resolve, reject) => {
     uni.setStorage({
@@ -485,7 +479,7 @@ const setStorage = (key, data) => {
     });
   });
 };
-const getStorage = key => {
+const getStorage = (key) => {
   return new Promise((resolve, reject) => {
     uni.getStorage({
       key,
@@ -498,7 +492,7 @@ const getStorage = key => {
     });
   });
 };
-const removeStorage = key => {
+const removeStorage = (key) => {
   return new Promise((resolve, reject) => {
     uni.removeStorage({
       key,
@@ -526,7 +520,7 @@ const clearStorage = () => {
   });
 };
 
-const showToast = title => {
+const showToast = (title) => {
   return new Promise((resolve, reject) => {
     uni.showToast({
       title: title + '',
@@ -591,6 +585,9 @@ export {
   previewImage,
   chooseVideo,
   chooseMedia,
+  login,
+
+
   makePhoneCall,
   showToast,
   switchTab,
@@ -604,7 +601,7 @@ export {
   getSystemInfo,
   navigateBack,
   getUserInfo,
-  login,
+  
   setStorage,
   getStorage,
   clearStorage,
