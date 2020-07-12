@@ -56,7 +56,7 @@ import yhButton from '@/components/yh-button/yh-button';
 import yhUploadImages from '@/components/yh-upload-images/yh-upload-images';
 import yhUploadVideo from '@/components/yh-upload-video/yh-upload-video';
 
-import { request, navigateTo } from '../../../common/utils/uniApi';
+import { request, navigateTo, uploadFile } from '../../../common/utils/uniApi';
 
 import { GET_ACCESS_TOKEN, GET_USER_INFO } from '../../../store/types';
 import { mapGetters } from 'vuex';
@@ -89,6 +89,7 @@ export default {
   onShow() {
     this.nowTime = new Date();
     this.formatCreatedtime(this.nowTime);
+    this.requestUpload()
   },
   // 监听页面隐藏
   onHide() {},
@@ -145,6 +146,8 @@ export default {
     // 请求 上传 img|video
     requestUpload(type) {
       const url = `upload/${type}`;
+      const filepath = `12`;
+      const name = `12`;
       const header = {
         'access-token': this.accessToken,
       };
@@ -152,7 +155,7 @@ export default {
         attachment: '',
       };
       const method = 'POST';
-      request(url, data, header, method)
+      uploadFile(url, filepath, name, header, data)
         .then((res) => {})
         .catch((err) => {});
     },

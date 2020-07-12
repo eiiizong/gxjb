@@ -34,7 +34,13 @@ const login = (timeout = 6000) => {
  * @param {String} method 请求方式 默认 GET
  * @param {Boolean} showMsgToast 是否显示数据请求结果msg提示
  */
-const request = (url, data, header = {}, method = 'GET', showMsgToast = true) => {
+const request = (
+  url,
+  data,
+  header = {},
+  method = 'GET',
+  showMsgToast = true
+) => {
   if (!url) {
     console.warn('请求参数url为空, 请求终止');
   }
@@ -235,6 +241,38 @@ const chooseMedia = (
       sourceType,
       maxDuration,
       camera,
+      success(res) {
+        resolve(res);
+      },
+      fail(err) {
+        reject(err);
+      },
+    });
+  });
+};
+
+/**
+ * 将本地资源上传到服务器。客户端发起一个 HTTPS POST 请求，其中 content-type 为 multipart/form-data
+ * @param {String} url 开发者服务器地址
+ * @param {String} filePath 要上传文件资源的路径 (本地路径)
+ * @param {String} name 文件对应的 key，开发者在服务端可以通过这个 key 获取文件的二进制内容
+ * @param {Object} header HTTP 请求 Header，Header 中不能设置 Referer
+ * @param {Object} formData HTTP 请求中其他额外的 form data
+ * @param {Number} timeout 超时时间，单位为毫秒
+ */
+const uploadFile = (url, filePath, name, header, formData, timeout) => {
+  if (!url) {
+    console.warn('请求参数url为空, 请求终止');
+  }
+  url = config.requestUrl + url;
+  return new Promise((resolve, reject) => {
+    uni.uploadFile({
+      url,
+      filePath,
+      name,
+      header,
+      formData,
+      timeout,
       success(res) {
         resolve(res);
       },
@@ -589,6 +627,7 @@ export {
   chooseVideo,
   chooseMedia,
   login,
+  uploadFile,
   makePhoneCall,
   showToast,
   switchTab,
