@@ -8,7 +8,12 @@
       <div class="cell address">
         <div class="name">巡检地点</div>
         <div class="select-address-wrapper">
-          <picker class="picker-wrapper" mode="region" :value="addressRegion" @change="handlePickerRegionChange">
+          <picker
+            class="picker-wrapper"
+            mode="region"
+            :value="addressRegion"
+            @change="handlePickerRegionChange"
+          >
             <div class="picker">
               <div class="text">{{ addressRegion | FormatAddress }}</div>
               <div class="icon icon-arrow-right"></div>
@@ -16,7 +21,7 @@
           </picker>
         </div>
         <div class="input-address-wrapper">
-          <input class="input" placeholder="请输入详细地址" />
+          <input class="input" placeholder="请输入详细地址" v-model="address" />
         </div>
       </div>
     </div>
@@ -53,7 +58,7 @@ import yhUploadVideo from '@/components/yh-upload-video/yh-upload-video';
 
 import { request, navigateTo } from '../../../common/utils/uniApi';
 
-import { GET_ACCESS_TOKEN } from '../../../store/types';
+import { GET_ACCESS_TOKEN, GET_USER_INFO } from '../../../store/types';
 import { mapGetters } from 'vuex';
 export default {
   name: 'upload',
@@ -64,10 +69,16 @@ export default {
   },
   data() {
     return {
-      address: '',
-      nowTime: new Date(),
+      // 详细地址
+      address: '财富中心C座',
+      // 时间
+      nowTime: '',
       // 省市区
       addressRegion: ['四川省', '成都市', '锦江区'],
+      // 合同号
+      contract_no: '',
+      // 创建时间
+      created_time: '',
     };
   },
   // 监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参）
@@ -75,13 +86,79 @@ export default {
   // 监听页面初次渲染完成
   onReady() {},
   // 监听页面显示
-  onShow() {},
+  onShow() {
+    this.nowTime = new Date();
+    this.formatCreatedtime(this.nowTime);
+  },
   // 监听页面隐藏
   onHide() {},
   methods: {
+    // 格式化创建时间
+    formatCreatedtime(date) {
+      let year = date.getFullYear();
+      let month = date.getMonth() + 1;
+      let day = date.getDate();
+      let hours = date.getHours();
+      let minute = date.getMinutes();
+      let second = date.getSeconds();
+      if (month < 10) {
+        month = '0' + month;
+      }
+      if (day < 10) {
+        day = '0' + day;
+      }
+      if (hours < 10) {
+        hours = '0' + hours;
+      }
+      if (minute < 10) {
+        minute = '0' + minute;
+      }
+      if (second < 10) {
+        second = '0' + second;
+      }
+      this.created_time = `${year}-${month}-${day} ${hours}:${minute}:${second}`;
+    },
+    // 请求 创建巡检记录
+    requestOrdersCreated() {
+      const url = 'orders/created';
+      const header = {
+        'access-token': this.accessToken,
+      };
+      const data = {
+        admin_id: this.userInfo.id,
+        contract_no: this.contract_no,
+        created_time: this.created_time,
+        areas: this.addressRegion.join(''),
+        address: this.address,
+        imgs: JSON.stringify([]),
+        videos: '123',
+      };
+      const method = 'POST';
+      request(url, data, header, method)
+        .then((res) => {
+          navigateTo(
+            `/pages/project/uploadResult/uploadResult?orderId=${res.id}`
+          );
+        })
+        .catch((err) => {});
+    },
+    // 请求 上传 img|video
+    requestUpload(type) {
+      const url = `upload/${type}`;
+      const header = {
+        'access-token': this.accessToken,
+      };
+      const data = {
+        attachment: '',
+      };
+      const method = 'POST';
+      request(url, data, header, method)
+        .then((res) => {})
+        .catch((err) => {});
+    },
     // 上传按钮 回调函数
     handleUpload() {
-      navigateTo(`/pages/project/uploadResult/uploadResult?orderId=${1234}`);
+      this.requestOrdersCreated();
     },
     // 图片上传 回调
     handleUploadImagesChange(images) {
@@ -93,11 +170,11 @@ export default {
     },
     // picker 地址选择 change
     handlePickerRegionChange(e) {
-      this.addressRegion = [].concat(e.detail.value)
-    }
+      this.addressRegion = [].concat(e.detail.value);
+    },
   },
   computed: {
-    ...mapGetters([GET_ACCESS_TOKEN]),
+    ...mapGetters([GET_ACCESS_TOKEN, GET_USER_INFO]),
   },
   watch: {},
 };

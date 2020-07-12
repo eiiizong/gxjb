@@ -17,13 +17,7 @@ Vue.filter('FormatAddress', function (value) {
   if (!value || value.length < 1) {
     return '';
   }
-  let str = '';
-  value.map((item) => {
-    if (item) {
-      str += item;
-    }
-  });
-  return str;
+  return value.join('');
 });
 
 // 格式化时间 将 newData 转化为 2020年07月03日 13:45:56

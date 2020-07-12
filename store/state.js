@@ -1,5 +1,6 @@
 const state = {
-    accessToken: 'abcdefghijklmnopqrstuvwxyz',
-}
+  accessToken: 'abcdefghijklmnopqrstuvwxyz',
+  userInfo: {},
+};
 
-export default state
+export default state;
