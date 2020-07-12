@@ -81,7 +81,7 @@ export default {
   methods: {
     // 上传按钮 回调函数
     handleUpload() {
-      navigateTo(`/pages/project/uploadResult/uploadResult`);
+      navigateTo(`/pages/project/uploadResult/uploadResult?orderId=${1234}`);
     },
     // 图片上传 回调
     handleUploadImagesChange(images) {

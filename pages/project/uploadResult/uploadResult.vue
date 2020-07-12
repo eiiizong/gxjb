@@ -75,6 +75,7 @@ export default {
   components: {},
   data() {
     return {
+      orderId: '',
       imagesData: [
         {
           id: 1,
@@ -93,10 +94,18 @@ export default {
         },
       ],
       videoData: [{}],
+      // 巡检详情
+      orderInfo: {}
     };
   },
   // 监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参）
-  onLoad() {},
+  onLoad(e) {
+    const orderId = e.orderId;
+    if (orderId) {
+      this.orderId = orderId;
+      this.requestOrdersDetails(orderId);
+    }
+  },
   // 监听页面初次渲染完成
   onReady() {},
   // 监听页面显示
@@ -104,10 +113,28 @@ export default {
   // 监听页面隐藏
   onHide() {},
   methods: {
+    // 请求 巡检详情
+    requestOrdersDetails(id) {
+      if (!id) {
+        return;
+      }
+      const url = `orders/view/${id}`;
+      const header = {
+        'access-token': this.accessToken,
+      };
+      const data = {};
+      const method = 'POST';
+      request(url, data, header, method)
+        .then((res) => {
+          this.orderInfo = Object.assign({}, res);
+        })
+        .catch((err) => {});
+    },
+    // 预览图片
     handlePreviewImage(index) {
       const data = this.imagesData;
       const current = index + '';
-      const urls = data.map(item => {
+      const urls = data.map((item) => {
         return item.path;
       });
       previewImage(current, urls);
