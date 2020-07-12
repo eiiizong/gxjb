@@ -32,8 +32,9 @@ const login = (timeout = 6000) => {
  * @param {Object} data 请求参数 body
  * @param {Object} header 请求参数 header
  * @param {String} method 请求方式 默认 GET
+ * @param {Boolean} showMsgToast 是否显示数据请求结果msg提示
  */
-const request = (url, data, header = {}, method = 'GET') => {
+const request = (url, data, header = {}, method = 'GET', showMsgToast = true) => {
   if (!url) {
     console.warn('请求参数url为空, 请求终止');
   }
@@ -63,7 +64,9 @@ const request = (url, data, header = {}, method = 'GET') => {
             请求地址${url},数据返回结果:
             ${res}
           `);
-          showToast(resData.msg);
+          if (showMsgToast) {
+            showToast(resData.msg);
+          }
           reject(res);
         }
       },
@@ -586,8 +589,6 @@ export {
   chooseVideo,
   chooseMedia,
   login,
-
-
   makePhoneCall,
   showToast,
   switchTab,
@@ -601,7 +602,6 @@ export {
   getSystemInfo,
   navigateBack,
   getUserInfo,
-  
   setStorage,
   getStorage,
   clearStorage,

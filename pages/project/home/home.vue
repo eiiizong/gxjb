@@ -2,11 +2,11 @@
   <view class="home">
     <div class="company-info">
       <div class="name">
-        成都大中华广告传播有限公司
+        {{ userInfo.name }}
       </div>
       <div class="account">
         <div>ID：</div>
-        <div>ggj5547</div>
+        <div>{{ userInfo.id }}</div>
       </div>
       <div class="button-wrapper">
         <yhButton
@@ -16,7 +16,9 @@
         ></yhButton>
       </div>
     </div>
-    <div class="hint">提示：距上次巡检已 1天1小时12分钟！</div>
+    <div class="hint" v-if="userInfo.last_create">
+      提示：{{ userInfo.last_create }}！
+    </div>
     <div class="button-wrapper">
       <yhButton
         className="zdy-btn"
@@ -63,8 +65,10 @@ export default {
   components: { yhButton },
   data() {
     return {
-      account: '1234',
+      // 历史巡检列表
       historyList: [1, 2, 3, 4, 5, 6, 7, 8],
+      // 用户信息
+      userInfo: {},
     };
   },
   // 监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参）
@@ -74,14 +78,59 @@ export default {
   // 监听页面初次渲染完成
   onReady() {},
   // 监听页面显示
-  onShow() {},
+  onShow() {
+    this.requestUserCenter();
+    this.requestOrdersList();
+  },
   // 监听页面隐藏
   onHide() {},
   methods: {
+    // 请求 用户中心
+    requestUserCenter() {
+      const url = 'user/center';
+      const header = {
+        'access-token': this.accessToken,
+      };
+      const data = {};
+      const method = 'POST';
+      request(url, data, header, method)
+        .then((res) => {
+          this.userInfo = Object.assign({}, res);
+        })
+        .catch((err) => {});
+    },
+    // 请求 退出登陆
+    requestLogout() {
+      const url = 'logout';
+      const header = {
+        'access-token': this.accessToken,
+      };
+      const data = {};
+      const method = 'POST';
+      request(url, data, header, method)
+        .then((res) => {
+          redirectTo(`/pages/project/login/login?type=loginOut`);
+        })
+        .catch((err) => {});
+    },
+    // 请求 巡检列表
+    requestOrdersList() {
+      const url = 'orders/list';
+      const header = {
+        'access-token': this.accessToken,
+      };
+      const data = {};
+      const method = 'POST';
+      request(url, data, header, method)
+        .then((res) => {
+          this.historyList = [].concat(res);
+        })
+        .catch((err) => {});
+    },
     // 退出登陆 回调函数
     handleLoginOut() {
       console.log('退出登陆');
-      redirectTo(`/pages/project/login/login?type=loginOut`);
+      this.requestLogout();
     },
     // 创建新的巡检记录 回调函数
     handleCreateNewRecord() {
@@ -134,6 +183,7 @@ $border-radius: 12rpx;
     font-size: 28rpx;
     color: #b99f4e;
     line-height: 120rpx;
+    height: 120rpx;
     text-align: center;
   }
   > .button-wrapper {
