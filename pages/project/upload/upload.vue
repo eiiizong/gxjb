@@ -44,6 +44,7 @@
         <yhButton
           className="zdy-btn"
           @click="handleUpload"
+          :disabled="!checkUploadButtonCanUse"
           value="开始上传"
         ></yhButton>
       </div>
@@ -56,7 +57,14 @@ import yhButton from '@/components/yh-button/yh-button';
 import yhUploadImages from '@/components/yh-upload-images/yh-upload-images';
 import yhUploadVideo from '@/components/yh-upload-video/yh-upload-video';
 
-import { request, navigateTo, uploadFile } from '../../../common/utils/uniApi';
+import {
+  request,
+  navigateTo,
+  uploadFile,
+  showLoading,
+  hideLoading,
+  showToast
+} from '../../../common/utils/uniApi';
 
 import { GET_ACCESS_TOKEN, GET_USER_INFO } from '../../../store/types';
 import { mapGetters } from 'vuex';
@@ -79,6 +87,10 @@ export default {
       contract_no: '',
       // 创建时间
       created_time: '',
+      // 上传的图片
+      uploadImages: [],
+      // 上传的视频
+      uploadVideos: [],
     };
   },
   // 监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参）
@@ -89,7 +101,7 @@ export default {
   onShow() {
     this.nowTime = new Date();
     this.formatCreatedtime(this.nowTime);
-    this.requestUpload()
+    this.requestUpload();
   },
   // 监听页面隐藏
   onHide() {},
@@ -121,6 +133,7 @@ export default {
     },
     // 请求 创建巡检记录
     requestOrdersCreated() {
+      console.log('requestOrdersCreated');
       const url = 'orders/created';
       const header = {
         'access-token': this.accessToken,
@@ -144,32 +157,70 @@ export default {
         .catch((err) => {});
     },
     // 请求 上传 img|video
-    requestUpload(type) {
+    requestUpload(type, name, filePath) {
       const url = `upload/${type}`;
-      const filepath = `12`;
-      const name = `12`;
       const header = {
         'access-token': this.accessToken,
       };
       const data = {
-        attachment: '',
+        attachment: name,
       };
       const method = 'POST';
-      uploadFile(url, filepath, name, header, data)
-        .then((res) => {})
-        .catch((err) => {});
+      return new Promise((resolve, reject) => {
+        uploadFile(url, filePath, name, header, data)
+          .then((res) => {
+            resolve(res);
+            console.log('ok', name);
+          })
+          .catch((err) => {
+            console.log('error', name);
+            // reject(err);
+            resolve(err);
+          })
+          .finally(() => {
+            console.log(type, name);
+            resolve(0);
+          });
+      });
     },
     // 上传按钮 回调函数
-    handleUpload() {
+    async handleUpload() {
+      showLoading('上传中');
+      const images = this.uploadImages;
+      const videos = this.uploadVideos;
+      const uploadImg0 = await this.requestUpload(
+        'img',
+        images[0].id,
+        images[0].path
+      );
+      const uploadImg1 = await this.requestUpload(
+        'img',
+        images[1].id,
+        images[1].path
+      );
+      const uploadImg2 = await this.requestUpload(
+        'img',
+        images[2].id,
+        images[2].path
+      );
+      const uploadVideos = await this.requestUpload(
+        'video',
+        videos[0].id,
+        videos[0].tempFilePath
+      );
+      hideLoading();
+      showToast('上传成功','success')
       this.requestOrdersCreated();
     },
     // 图片上传 回调
     handleUploadImagesChange(images) {
       console.log('handleUploadImagesChange', images);
+      this.uploadImages = [].concat(images);
     },
     // 视频上传 回调
-    handleUploadVideoChange(video) {
-      console.log('handleUploadVideoChange', video);
+    handleUploadVideoChange(videos) {
+      console.log('handleUploadVideoChange', videos);
+      this.uploadVideos = [].concat(videos);
     },
     // picker 地址选择 change
     handlePickerRegionChange(e) {
@@ -178,6 +229,19 @@ export default {
   },
   computed: {
     ...mapGetters([GET_ACCESS_TOKEN, GET_USER_INFO]),
+    // 检测上传按钮是否可用
+    checkUploadButtonCanUse() {
+      let canUse = true;
+      const address = this.address;
+      const addressRegion = this.addressRegion;
+      if (!addressRegion || addressRegion.length < 3) {
+        canUse = false;
+      }
+      if (!address) {
+        canUse = false;
+      }
+      return canUse;
+    },
   },
   watch: {},
 };

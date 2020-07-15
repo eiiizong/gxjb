@@ -284,6 +284,78 @@ const uploadFile = (url, filePath, name, header, formData, timeout) => {
 };
 
 /**
+ * 显示 loading 提示框, 需主动调用 wx.hideLoading 才能关闭提示框。
+ * @param {String} title 提示的内容
+ * @param {Boolean} mask 是否显示透明蒙层，防止触摸穿透，默认：true
+ */
+const showLoading = (title, mask = true) => {
+  return new Promise((resolve, reject) => {
+    uni.showLoading({
+      title,
+      mask,
+      success(res) {
+        resolve(res);
+      },
+      fail(err) {
+        reject(err);
+      },
+    });
+  });
+};
+
+/**
+ * 隐藏 loading 提示框。
+ */
+const hideLoading = () => {
+  return new Promise((resolve, reject) => {
+    uni.hideLoading({
+      success(res) {
+        resolve(res);
+      },
+      fail(err) {
+        reject(err);
+      },
+    });
+  });
+};
+
+/**
+ * 显示消息提示框。
+ * @param {String} title 提示的内容，长度与 icon 取值有关
+ * @param {String} iocn 图标，有效值 success loading none 默认值
+ * @param {*} image 自定义图标的本地路径
+ * @param {*} mask 是否显示透明蒙层，防止触摸穿透，默认：true
+ * @param {*} duration 提示的延迟时间，单位毫秒，默认：1500
+ * @param {*} position 纯文本轻提示显示位置，填写有效值后只有 title 属性生效， 有效值 top bottom center 默认值
+ */
+
+const showToast = (
+  title,
+  icon = 'none',
+  image = '',
+  mask = true,
+  duration = 1500,
+  position = 'center'
+) => {
+  return new Promise((resolve, reject) => {
+    uni.showToast({
+      title,
+      icon,
+      image,
+      mask,
+      duration,
+      position,
+      success(res) {
+        resolve(res);
+      },
+      fail(err) {
+        reject(err);
+      },
+    });
+  });
+};
+
+/**
  *  ======================   以上api已根据微信官方接口确定注释参数类型    =======================
  */
 
@@ -561,25 +633,6 @@ const clearStorage = () => {
   });
 };
 
-const showToast = (title) => {
-  return new Promise((resolve, reject) => {
-    uni.showToast({
-      title: title + '',
-      icon: 'none',
-      mask: true,
-      success(res) {
-        if (res.confirm) {
-          resolve(true);
-        } else if (res.cancel) {
-          resolve(false);
-        }
-      },
-      fail(err) {
-        reject(err);
-      },
-    });
-  });
-};
 const showModal = (title, content) => {
   return new Promise((resolve, reject) => {
     uni.showModal({
@@ -628,6 +681,8 @@ export {
   chooseMedia,
   login,
   uploadFile,
+  showLoading,
+  hideLoading,
   makePhoneCall,
   showToast,
   switchTab,
