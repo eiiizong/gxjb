@@ -24,6 +24,33 @@
           <input class="input" placeholder="请输入详细地址" v-model="address" />
         </div>
       </div>
+      <div class="cell info">
+        <div class="name">巡检审核信息</div>
+        <div class="select-address-wrapper">
+          <picker
+            class="picker-wrapper"
+            :value="
+              auditorsList.indexOf(auditors) > 0
+                ? auditorsList.indexOf(auditors)
+                : 0
+            "
+            :range="auditorsList"
+            @change="handlePickerAuditorsChange"
+          >
+            <div class="picker">
+              <div class="text">{{ auditors }}</div>
+              <div class="icon icon-arrow-right"></div>
+            </div>
+          </picker>
+        </div>
+        <div class="input-address-wrapper">
+          <input
+            class="input"
+            placeholder="请输入合同号"
+            v-model="contract_no"
+          />
+        </div>
+      </div>
     </div>
     <div class="center">
       <div class="upload-images">
@@ -63,7 +90,7 @@ import {
   uploadFile,
   showLoading,
   hideLoading,
-  showToast
+  showToast,
 } from '../../../common/utils/uniApi';
 
 import { GET_ACCESS_TOKEN, GET_USER_INFO } from '../../../store/types';
@@ -77,6 +104,8 @@ export default {
   },
   data() {
     return {
+      auditors: '请选择审核人员',
+      auditorsList: ['张三', '李四', '王老五'],
       // 详细地址
       address: '财富中心C座',
       // 时间
@@ -209,7 +238,7 @@ export default {
         videos[0].tempFilePath
       );
       hideLoading();
-      showToast('上传成功','success')
+      showToast('上传成功', 'success');
       this.requestOrdersCreated();
     },
     // 图片上传 回调
@@ -225,6 +254,11 @@ export default {
     // picker 地址选择 change
     handlePickerRegionChange(e) {
       this.addressRegion = [].concat(e.detail.value);
+    },
+    // picker 审核人员 change
+    handlePickerAuditorsChange(e) {
+      console.log(e);
+      this.auditors = this.auditorsList[e.detail.value];
     },
   },
   computed: {
@@ -271,6 +305,9 @@ $border-color: #e8e8e8;
       }
     }
     .time {
+      border-bottom: 1px solid $border-color;
+    }
+    .address {
       border-bottom: 1px solid $border-color;
     }
     .input-address-wrapper {
