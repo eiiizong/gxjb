@@ -44,7 +44,7 @@
 import yhButton from '@/components/yh-button/yh-button';
 import { request, redirectTo, login } from '../../../common/utils/uniApi';
 
-import { CHANGE_ACCESS_TOKEN } from '../../../store/types';
+import { CHANGE_ACCESS_TOKEN ,CHANGE_USER_INFO} from '../../../store/types';
 // import { mapGetters } from 'vuex';
 export default {
   name: 'login',
@@ -53,8 +53,8 @@ export default {
   },
   data() {
     return {
-      account: '18482160090',
-      password: '5201314',
+      account: '13811111111 ',
+      password: '123456',
       loginBtnText: '登陆',
       loginBtnIsLoading: false,
       loginBtnDisabled: false,
@@ -103,10 +103,13 @@ export default {
           const { access_token } = res;
           if (access_token) {
             this.$store.commit(CHANGE_ACCESS_TOKEN, access_token);
+            // this.$store.commit(CHANGE_USER_INFO, res);
           }
           redirectTo(`/pages/project/home/home`);
         })
-        .catch((err) => {});
+        .catch((err) => {
+          this.changeBtnStatus(false);
+        });
     },
     // 微信小程序 login
     requestWechatLogin() {
@@ -114,7 +117,9 @@ export default {
         .then((res) => {
           this.requestLogin(res);
         })
-        .catch((err) => {});
+        .catch((err) => {
+
+        });
     },
   },
   computed: {},

@@ -58,7 +58,7 @@ import {
   hideHomeButton,
 } from '../../../common/utils/uniApi';
 
-import { GET_ACCESS_TOKEN } from '../../../store/types';
+import { GET_ACCESS_TOKEN, GET_USER_INFO } from '../../../store/types';
 import { mapGetters } from 'vuex';
 export default {
   name: 'home',
@@ -78,10 +78,7 @@ export default {
   // 监听页面初次渲染完成
   onReady() {},
   // 监听页面显示
-  onShow() {
-    this.requestUserCenter();
-    this.requestOrdersList();
-  },
+  onShow() {},
   // 监听页面隐藏
   onHide() {},
   methods: {
@@ -141,7 +138,17 @@ export default {
   computed: {
     ...mapGetters([GET_ACCESS_TOKEN]),
   },
-  watch: {},
+  watch: {
+    accessToken: {
+      handler(newVal, oldVal) {
+        if (newVal) {
+          this.requestUserCenter();
+          this.requestOrdersList();
+        }
+      },
+      immediate: true,
+    },
+  },
 };
 </script>
 

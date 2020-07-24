@@ -1,5 +1,5 @@
 const state = {
-  accessToken: 'abcdefghijklmnopqrstuvwxyz',
+  accessToken: '',
   userInfo: {},
 };
 

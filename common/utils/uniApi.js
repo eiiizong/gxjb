@@ -59,17 +59,18 @@ const request = (
       success: (res) => {
         const resData = res.data;
         // 请求成功 状态码为200 &&
-        if (res.statusCode === 200 && resData && resData.status === 200) {
+        if (res.statusCode === 200 && resData && resData.status === config.statusCode) {
           console.log(`
-            请求地址${url},数据返回结果:
-            ${resData.data}
-          `);
+            请求地址${url}, 状态码 ${resData.status}, 数据返回结果: 
+          `,resData.data);
           resolve(resData.data);
         } else {
           console.log(`
-            请求地址${url},数据返回结果:
-            ${res}
-          `);
+            请求地址${url}, 状态码 ${resData.status}, 数据返回结果:
+          `, res);
+          // if(res.statusCode === 200 && resData.status===config.certificationInvalidationStatusCode) {
+          //   redirectTo(config.loginPath)
+          // }
           if (showMsgToast) {
             showToast(resData.msg);
           }
@@ -79,8 +80,7 @@ const request = (
       fail: (err) => {
         console.log(`
           请求地址${url},数据返回结果:
-          ${err}
-        `);
+        `, err);
         reject(err);
       },
     });
