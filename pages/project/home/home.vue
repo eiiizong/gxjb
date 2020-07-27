@@ -76,7 +76,7 @@ export default {
   data() {
     return {
       // 历史巡检列表
-      historyList: [1],
+      historyList: [],
     };
   },
   // 监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参）
