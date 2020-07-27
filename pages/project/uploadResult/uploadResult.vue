@@ -1,6 +1,6 @@
 <template>
   <view class="upload-result">
-    <div class="hint">
+    <div class="hint" v-if="type==='upload'">
       <div class="icon icon-success"></div>
       <div class="text">上传成功</div>
     </div>
@@ -95,15 +95,21 @@ export default {
       ],
       videoData: [{}],
       // 巡检详情
-      orderInfo: {}
+      orderInfo: {},
+      type: ''
     };
   },
   // 监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参）
   onLoad(e) {
     const orderId = e.orderId;
+    // 类型 upload history
+    const type = e.type;
     if (orderId) {
       this.orderId = orderId;
       this.requestOrdersDetails(orderId);
+    }
+    if(type) {
+      this.type = type
     }
   },
   // 监听页面初次渲染完成

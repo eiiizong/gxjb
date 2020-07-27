@@ -264,6 +264,10 @@ const uploadFile = (url, filePath, name, header, formData, timeout) => {
   if (!url) {
     console.warn('请求参数url为空, 请求终止');
   }
+  header = {
+    ...header,
+    'device-type': 'wechat',
+  }
   url = config.requestUrl + url;
   return new Promise((resolve, reject) => {
     uni.uploadFile({

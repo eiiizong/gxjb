@@ -116,13 +116,15 @@ export default {
       // 省市区
       addressRegion: ['四川省', '成都市', '锦江区'],
       // 合同号
-      contract_no: '',
+      contract_no: ' contract_no_hh123',
       // 创建时间
       created_time: '',
       // 上传的图片
       uploadImages: [],
       // 上传的视频
       uploadVideos: [],
+      serveImages: [],
+      serveVideos: [],
     };
   },
   // 监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参）
@@ -183,7 +185,7 @@ export default {
       request(url, data, header, method)
         .then((res) => {
           navigateTo(
-            `/pages/project/uploadResult/uploadResult?orderId=${res.id}`
+            `/pages/project/uploadResult/uploadResult?orderId=${res.id}&type=upload`
           );
         })
         .catch((err) => {});
@@ -201,55 +203,79 @@ export default {
       return new Promise((resolve, reject) => {
         uploadFile(url, filePath, name, header, data)
           .then((res) => {
-            resolve(res);
-            console.log('ok', name);
+            const data = JSON.parse(res.data);
+
+            if (res.statusCode === 200 && data.status === '200') {
+              const resultData = data.data;
+              if (resultData.object === 'img') {
+                this.serveImages.push(resultData.src);
+              }
+              if (resultData.object === 'video') {
+                this.serveVideos.push(resultData.src);
+              }
+              console.log('上传成功', name, res, data);
+              resolve(data);
+            } else {
+              console.log('上传失败', name, res, data);
+            }
           })
+
           .catch((err) => {
-            console.log('error', name);
-            // reject(err);
-            resolve(err);
-          })
-          .finally(() => {
-            console.log(type, name);
-            resolve(0);
+            console.log('上传失败', name, err);
+            reject(err);
           });
       });
     },
-    // 上传按钮 回调函数
-    async handleUpload() {
-      showLoading('上传中');
+    // 图片上传至服务器
+    async uploadImagesToServer() {
       const images = this.uploadImages;
       const videos = this.uploadVideos;
       const uploadImg0 = await this.requestUpload(
         'img',
-        images[0].id,
+        images[0].id + '_1',
         images[0].path
       );
       const uploadImg1 = await this.requestUpload(
         'img',
-        images[1].id,
+        images[1].id + '_2',
         images[1].path
       );
       const uploadImg2 = await this.requestUpload(
         'img',
-        images[2].id,
+        images[2].id + '_3',
         images[2].path
       );
+      const uploadVideos = await this.requestUpload(
+        'video',
+        videos[0].id+ '_4',
+        videos[0].tempFilePath
+      );
+      console.log('upload over =========================');
+    },
+    // 视频上传至服务器
+    async uploadVideoToServer() {
+      const videos = this.uploadVideos;
       const uploadVideos = await this.requestUpload(
         'video',
         videos[0].id,
         videos[0].tempFilePath
       );
-      hideLoading();
-      showToast('上传成功', 'success');
-      this.requestOrdersCreated();
     },
-    // 图片上传 回调
+    // 上传按钮 回调函数
+    handleUpload() {
+      // showLoading('上传中');
+      this.uploadImagesToServer();
+      // this.uploadVideoToServer();
+      // hideLoading();
+      // showToast('上传成功', 'success');
+      // this.requestOrdersCreated();
+    },
+    // 图片本地上传 回调
     handleUploadImagesChange(images) {
       console.log('handleUploadImagesChange', images);
       this.uploadImages = [].concat(images);
     },
-    // 视频上传 回调
+    // 视频本地上传 回调
     handleUploadVideoChange(videos) {
       console.log('handleUploadVideoChange', videos);
       this.uploadVideos = [].concat(videos);
@@ -271,6 +297,7 @@ export default {
       let canUse = true;
       const address = this.address;
       const addressRegion = this.addressRegion;
+
       if (!addressRegion || addressRegion.length < 3) {
         canUse = false;
       }

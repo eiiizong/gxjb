@@ -33,7 +33,11 @@
     <scroll-view scroll-y class="scroll-wrapper">
       <div class="list">
         <template v-for="item in historyList">
-          <div class="item" :key="item.id">
+          <div
+            class="item"
+            :key="item.id"
+            @click="handlehistoryListItem(item.id || item)"
+          >
             <div class="time">2020年6月1日 09:32:00</div>
             <div class="address">四川省成都市锦江区大业路 财富中心</div>
             <div class="img-box">
@@ -63,7 +67,7 @@ import {
   GET_ACCESS_TOKEN,
   GET_USER_INFO,
   CHANGE_USER_INFO,
-  CHANGE_ADMIN_LIST
+  CHANGE_ADMIN_LIST,
 } from '../../../store/types';
 import { mapGetters } from 'vuex';
 export default {
@@ -72,7 +76,7 @@ export default {
   data() {
     return {
       // 历史巡检列表
-      historyList: [],
+      historyList: [1],
     };
   },
   // 监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参）
@@ -141,6 +145,10 @@ export default {
     handleCreateNewRecord() {
       console.log('创建新的巡检记录');
       navigateTo(`/pages/project/upload/upload`);
+    },
+    // 巡检记录详情
+    handlehistoryListItem(id) {
+      console.log(id);
     },
   },
   computed: {
