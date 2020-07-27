@@ -16,9 +16,7 @@
         ></yhButton>
       </div>
     </div>
-    <div class="hint" v-if="userInfo.last_create">
-      提示：{{ userInfo.last_create }}！
-    </div>
+    <div class="hint">提示：{{ userInfo.last_create || '暂无记录' }}！</div>
     <div class="button-wrapper">
       <yhButton
         className="zdy-btn"
@@ -43,6 +41,9 @@
             </div>
           </div>
         </template>
+        <div class="no-content" v-if="!historyList || historyList.length < 1">
+          暂无记录
+        </div>
       </div>
     </scroll-view>
   </view>
@@ -58,7 +59,11 @@ import {
   hideHomeButton,
 } from '../../../common/utils/uniApi';
 
-import { GET_ACCESS_TOKEN, GET_USER_INFO } from '../../../store/types';
+import {
+  GET_ACCESS_TOKEN,
+  GET_USER_INFO,
+  CHANGE_USER_INFO,
+} from '../../../store/types';
 import { mapGetters } from 'vuex';
 export default {
   name: 'home',
@@ -66,9 +71,7 @@ export default {
   data() {
     return {
       // 历史巡检列表
-      historyList: [1, 2, 3, 4, 5, 6, 7, 8],
-      // 用户信息
-      userInfo: {},
+      historyList: [],
     };
   },
   // 监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参）
@@ -92,7 +95,10 @@ export default {
       const method = 'POST';
       request(url, data, header, method)
         .then((res) => {
-          this.userInfo = Object.assign({}, res);
+          this.$store.commit(CHANGE_USER_INFO, {
+            ...this.userInfo,
+            ...res,
+          });
         })
         .catch((err) => {});
     },
@@ -136,7 +142,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([GET_ACCESS_TOKEN]),
+    ...mapGetters([GET_ACCESS_TOKEN, GET_USER_INFO]),
   },
   watch: {
     accessToken: {
@@ -248,6 +254,12 @@ $border-radius: 12rpx;
         width: 112rpx;
         height: 54rpx;
       }
+    }
+    .no-content {
+      text-align: center;
+      font-size: 28rpx;
+      padding-top: 200rpx;
+      color: #999;
     }
   }
 }

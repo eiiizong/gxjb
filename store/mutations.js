@@ -1,4 +1,4 @@
-import { CHANGE_ACCESS_TOKEN, CHANGE_USER_INFO } from './types';
+import { CHANGE_ACCESS_TOKEN, CHANGE_USER_INFO,CHANGE_ADMIN_LIST } from './types';
 
 const mutations = {
   // 改变 access-token
@@ -13,6 +13,11 @@ const mutations = {
       ...state.userInfo,
       ...userInfo,
     };
+  },
+  // 改变 巡检人员列表
+  [CHANGE_ADMIN_LIST](state, list) {
+    console.log('正在改变全局状态的 adminList,传入的值: ', list);
+    state.adminList = [].concat(list);
   },
 };
 

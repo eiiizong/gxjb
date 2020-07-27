@@ -103,7 +103,7 @@ export default {
           const { access_token } = res;
           if (access_token) {
             this.$store.commit(CHANGE_ACCESS_TOKEN, access_token);
-            // this.$store.commit(CHANGE_USER_INFO, res);
+            this.$store.commit(CHANGE_USER_INFO, res);
           }
           redirectTo(`/pages/project/home/home`);
         })
