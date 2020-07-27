@@ -29,16 +29,15 @@
         <div class="select-address-wrapper">
           <picker
             class="picker-wrapper"
-            :value="
-              auditorsList.indexOf(auditors) > 0
-                ? auditorsList.indexOf(auditors)
-                : 0
-            "
-            :range="auditorsList"
+            :value="adminListIndex > -1 ? adminListIndex : 0"
+            :range="adminList"
+            range-key="name"
             @change="handlePickerAuditorsChange"
           >
             <div class="picker">
-              <div class="text">{{ auditors }}</div>
+              <div class="text">
+                {{ adminList[adminListIndex].name || '请选择审核人员' }}
+              </div>
               <div class="icon icon-arrow-right"></div>
             </div>
           </picker>
@@ -93,7 +92,11 @@ import {
   showToast,
 } from '../../../common/utils/uniApi';
 
-import { GET_ACCESS_TOKEN, GET_USER_INFO } from '../../../store/types';
+import {
+  GET_ACCESS_TOKEN,
+  GET_USER_INFO,
+  GET_ADMIN_LIST,
+} from '../../../store/types';
 import { mapGetters } from 'vuex';
 export default {
   name: 'upload',
@@ -104,8 +107,8 @@ export default {
   },
   data() {
     return {
-      auditors: '请选择审核人员',
-      auditorsList: ['张三', '李四', '王老五'],
+      // 选中审核人员序号
+      adminListIndex: -1,
       // 详细地址
       address: '财富中心C座',
       // 时间
@@ -257,12 +260,12 @@ export default {
     },
     // picker 审核人员 change
     handlePickerAuditorsChange(e) {
-      console.log(e);
-      this.auditors = this.auditorsList[e.detail.value];
+      const value = e.detail.value;
+      this.adminListIndex = parseInt(value);
     },
   },
   computed: {
-    ...mapGetters([GET_ACCESS_TOKEN, GET_USER_INFO]),
+    ...mapGetters([GET_ACCESS_TOKEN, GET_USER_INFO, GET_ADMIN_LIST]),
     // 检测上传按钮是否可用
     checkUploadButtonCanUse() {
       let canUse = true;

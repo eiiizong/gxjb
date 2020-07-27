@@ -63,6 +63,7 @@ import {
   GET_ACCESS_TOKEN,
   GET_USER_INFO,
   CHANGE_USER_INFO,
+  CHANGE_ADMIN_LIST
 } from '../../../store/types';
 import { mapGetters } from 'vuex';
 export default {
@@ -99,6 +100,7 @@ export default {
             ...this.userInfo,
             ...res,
           });
+          this.$store.commit(CHANGE_ADMIN_LIST, res.admin_list);
         })
         .catch((err) => {});
     },
