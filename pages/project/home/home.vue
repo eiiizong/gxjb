@@ -38,7 +38,7 @@
             :key="item.id"
             @click="handlehistoryListItem(item.id || item)"
           >
-            <div class="time">{{ new Date(item.created_at) | FormatDate }}</div>
+            <div class="time">{{ item.created_at | FormatTime }}</div>
             <div class="address">{{ item.areas + item.address }}</div>
             <div class="img-box">
               <img src="/static/images/home/icon-upload-ok.png" alt="" />
@@ -87,7 +87,10 @@ export default {
   onReady() {},
   // 监听页面显示
   onShow() {
-    this.requestOrdersList();
+    if (this.accessToken) {
+      this.requestUserCenter();
+      this.requestOrdersList();
+    }
   },
   // 监听页面隐藏
   onHide() {},

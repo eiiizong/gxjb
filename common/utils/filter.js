@@ -49,4 +49,13 @@ Vue.filter('FormatDate', function (date) {
   }
   return `${year}年${month}月${day}日 ${hours}:${minute}:${second}`;
 });
+
+// 格式化时间 将 2020-07-03 13:45:56 转化为 2020年07月03日 13:45:56
+Vue.filter('FormatTime', function (time) {
+  // 如果为空 则返回空字符串
+  if (!time) {
+    return '';
+  }
+  return `${time.substring(0,4)}年${time.substring(5,7)}月${time.substring(8,10)}日 ${time.substring(11)}`;
+});
 export default Vue;

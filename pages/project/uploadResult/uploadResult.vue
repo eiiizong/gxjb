@@ -8,7 +8,7 @@
       <div class="cell time">
         <div class="name">巡检时间</div>
         <div class="value">
-          {{ new Date(orderInfo.created_at) | FormatDate }}
+          {{ orderInfo.created_at | FormatTime }}
         </div>
       </div>
       <div class="cell address">

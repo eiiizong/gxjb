@@ -77,6 +77,7 @@ export default {
       this.account = account;
       this.password = password;
     });
+    this.checkLogin();
   },
   // 监听页面隐藏
   onHide() {},
@@ -139,9 +140,30 @@ export default {
         })
         .catch((err) => {});
     },
+    // 检测登陆
+    checkLogin() {
+      const account = this.account;
+      const password = this.password;
+      if (!account) {
+        this.loginBtnDisabled = true;
+        return;
+      }
+      if (!password) {
+        this.loginBtnDisabled = true;
+        return;
+      }
+      this.loginBtnDisabled = false;
+    },
   },
   computed: {},
-  watch: {},
+  watch: {
+    account(newData) {
+      this.checkLogin();
+    },
+    password(newData) {
+      this.checkLogin();
+    },
+  },
 };
 </script>
 
