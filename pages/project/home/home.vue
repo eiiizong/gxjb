@@ -38,8 +38,8 @@
             :key="item.id"
             @click="handlehistoryListItem(item.id || item)"
           >
-            <div class="time">2020年6月1日 09:32:00</div>
-            <div class="address">四川省成都市锦江区大业路 财富中心</div>
+            <div class="time">{{ new Date(item.created_at) | FormatDate }}</div>
+            <div class="address">{{ item.areas + item.address }}</div>
             <div class="img-box">
               <img src="/static/images/home/icon-upload-ok.png" alt="" />
             </div>
@@ -86,7 +86,9 @@ export default {
   // 监听页面初次渲染完成
   onReady() {},
   // 监听页面显示
-  onShow() {},
+  onShow() {
+    this.requestOrdersList();
+  },
   // 监听页面隐藏
   onHide() {},
   methods: {
@@ -148,7 +150,9 @@ export default {
     },
     // 巡检记录详情
     handlehistoryListItem(id) {
-      console.log(id);
+      navigateTo(
+        `/pages/project/uploadResult/uploadResult?orderId=${id}&type=history`
+      );
     },
   },
   computed: {

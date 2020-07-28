@@ -59,15 +59,25 @@ const request = (
       success: (res) => {
         const resData = res.data;
         // 请求成功 状态码为200 &&
-        if (res.statusCode === 200 && resData && resData.status === config.statusCode) {
-          console.log(`
+        if (
+          res.statusCode === 200 &&
+          resData &&
+          resData.status === config.statusCode
+        ) {
+          console.log(
+            `
             请求地址${url}, 状态码 ${resData.status}, 数据返回结果: 
-          `,resData.data);
+          `,
+            resData.data
+          );
           resolve(resData.data);
         } else {
-          console.log(`
+          console.log(
+            `
             请求地址${url}, 状态码 ${resData.status}, 数据返回结果:
-          `, res);
+          `,
+            res
+          );
           // if(res.statusCode === 200 && resData.status===config.certificationInvalidationStatusCode) {
           //   redirectTo(config.loginPath)
           // }
@@ -78,9 +88,12 @@ const request = (
         }
       },
       fail: (err) => {
-        console.log(`
+        console.log(
+          `
           请求地址${url},数据返回结果:
-        `, err);
+        `,
+          err
+        );
         reject(err);
       },
     });
@@ -267,7 +280,7 @@ const uploadFile = (url, filePath, name, header, formData, timeout) => {
   header = {
     ...header,
     'device-type': 'wechat',
-  }
+  };
   url = config.requestUrl + url;
   return new Promise((resolve, reject) => {
     uni.uploadFile({
@@ -359,6 +372,94 @@ const showToast = (
   });
 };
 
+/**
+ * 动态设置当前页面的标题。
+ * @param {String} title
+ */
+const setNavigationBarTitle = (title) => {
+  return new Promise((resolve, reject) => {
+    uni.setNavigationBarTitle({
+      title,
+      success(res) {
+        resolve(res);
+      },
+      fail(err) {
+        reject(err);
+      },
+    });
+  });
+};
+/**
+ * 将数据存储在本地缓存中指定的 key 中。会覆盖掉原来该 key 对应的内容。除非用户主动删除或因存储空间原因被系统清理，否则数据都一直可用。单个 key 允许存储的最大数据长度为 1MB，所有数据存储上限为 10MB。
+ * @param {String} key 本地缓存中指定的 key
+ * @param {Any} data 需要存储的内容。只支持原生类型、Date、及能够通过JSON.stringify序列化的对象。
+ */
+const setStorage = (key, data) => {
+  return new Promise((resolve, reject) => {
+    uni.setStorage({
+      key,
+      data,
+      success(res) {
+        resolve(res);
+      },
+      fail(err) {
+        reject(err);
+      },
+    });
+  });
+};
+
+/**
+ * 从本地缓存中异步获取指定 key 的内容
+ * @param {String} key 本地缓存中指定的 key
+ */
+const getStorage = (key) => {
+  return new Promise((resolve, reject) => {
+    uni.getStorage({
+      key,
+      success(res) {
+        resolve(res);
+      },
+      fail(err) {
+        reject(err);
+      },
+    });
+  });
+};
+/**
+ * 从本地缓存中移除指定 key
+ * @param {String} key 本地缓存中指定的 key
+ */
+const removeStorage = (key) => {
+  return new Promise((resolve, reject) => {
+    uni.removeStorage({
+      key,
+      success(res) {
+        console.log(res);
+        resolve(res);
+      },
+      fail(err) {
+        reject(err);
+      },
+    });
+  });
+};
+/**
+ * 清理本地数据缓存
+ */
+const clearStorage = () => {
+  return new Promise((resolve, reject) => {
+    uni.clearStorage({
+      success(res) {
+        console.log(res);
+        resolve(res);
+      },
+      fail(err) {
+        reject(err);
+      },
+    });
+  });
+};
 /**
  *  ======================   以上api已根据微信官方接口确定注释参数类型    =======================
  */
@@ -463,23 +564,6 @@ const openLocation = (latitude, longitude, name, address, scale = 18) => {
 };
 
 /**
- * 动态设置当前页面的标题。
- * @param {*} title
- */
-const setNavigationBarTitle = (title) => {
-  return new Promise((resolve, reject) => {
-    uni.setNavigationBarTitle({
-      title,
-      success(res) {
-        resolve(res);
-      },
-      fail(err) {
-        reject(err);
-      },
-    });
-  });
-};
-/**
  * 设置页面导航条颜色
  * @param {*} backgroundColor
  * @param {*} frontColor
@@ -581,62 +665,6 @@ const getUserInfo = (lang = 'en', withCredentials = false) => {
   });
 };
 
-const setStorage = (key, data) => {
-  return new Promise((resolve, reject) => {
-    uni.setStorage({
-      key,
-      data,
-      success(res) {
-        // console.log(res);
-        resolve(res);
-      },
-      fail(err) {
-        reject(err);
-      },
-    });
-  });
-};
-const getStorage = (key) => {
-  return new Promise((resolve, reject) => {
-    uni.getStorage({
-      key,
-      success(res) {
-        resolve(res);
-      },
-      fail(err) {
-        reject(err);
-      },
-    });
-  });
-};
-const removeStorage = (key) => {
-  return new Promise((resolve, reject) => {
-    uni.removeStorage({
-      key,
-      success(res) {
-        console.log(res);
-        resolve(res);
-      },
-      fail(err) {
-        reject(err);
-      },
-    });
-  });
-};
-const clearStorage = () => {
-  return new Promise((resolve, reject) => {
-    uni.clearStorage({
-      success(res) {
-        console.log(res);
-        resolve(res);
-      },
-      fail(err) {
-        reject(err);
-      },
-    });
-  });
-};
-
 const showModal = (title, content) => {
   return new Promise((resolve, reject) => {
     uni.showModal({
@@ -687,23 +715,24 @@ export {
   uploadFile,
   showLoading,
   hideLoading,
+  setNavigationBarTitle,
+  setStorage,
+  getStorage,
+  removeStorage,
+  clearStorage,
+  
   makePhoneCall,
   showToast,
   switchTab,
   getLocation,
   chooseLocation,
   openLocation,
-  setNavigationBarTitle,
   setNavigationBarColor,
   setTabBarBadge,
   removeTabBarBadge,
   getSystemInfo,
   navigateBack,
   getUserInfo,
-  setStorage,
-  getStorage,
-  clearStorage,
-  removeStorage,
   showModal,
   requestPayment,
 };

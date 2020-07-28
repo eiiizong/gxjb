@@ -42,9 +42,15 @@
 
 <script>
 import yhButton from '@/components/yh-button/yh-button';
-import { request, redirectTo, login } from '../../../common/utils/uniApi';
+import {
+  request,
+  redirectTo,
+  login,
+  setStorage,
+  getStorage,
+} from '../../../common/utils/uniApi';
 
-import { CHANGE_ACCESS_TOKEN ,CHANGE_USER_INFO} from '../../../store/types';
+import { CHANGE_ACCESS_TOKEN, CHANGE_USER_INFO } from '../../../store/types';
 // import { mapGetters } from 'vuex';
 export default {
   name: 'login',
@@ -53,8 +59,8 @@ export default {
   },
   data() {
     return {
-      account: '13811111111 ',
-      password: '123456',
+      account: '',
+      password: '',
       loginBtnText: '登陆',
       loginBtnIsLoading: false,
       loginBtnDisabled: false,
@@ -65,7 +71,13 @@ export default {
   // 监听页面初次渲染完成
   onReady() {},
   // 监听页面显示
-  onShow() {},
+  onShow() {
+    getStorage('USER_ACCOUNT_INFO').then((res) => {
+      const { account, password } = JSON.parse(res.data);
+      this.account = account;
+      this.password = password;
+    });
+  },
   // 监听页面隐藏
   onHide() {},
   methods: {
@@ -104,6 +116,14 @@ export default {
           if (access_token) {
             this.$store.commit(CHANGE_ACCESS_TOKEN, access_token);
             this.$store.commit(CHANGE_USER_INFO, res);
+            // 将账号密码缓存至本地
+            setStorage(
+              'USER_ACCOUNT_INFO',
+              JSON.stringify({
+                account: this.account,
+                password: this.password,
+              })
+            );
           }
           redirectTo(`/pages/project/home/home`);
         })
@@ -117,9 +137,7 @@ export default {
         .then((res) => {
           this.requestLogin(res);
         })
-        .catch((err) => {
-
-        });
+        .catch((err) => {});
     },
   },
   computed: {},
