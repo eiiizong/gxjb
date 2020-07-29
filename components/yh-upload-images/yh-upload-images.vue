@@ -40,7 +40,7 @@
 /**
  * 上传图片
  */
-import { chooseImage, previewImage } from '../../common/utils/uniApi';
+import { chooseImage, previewImage, showToast } from '../../common/utils/uniApi';
 export default {
   name: 'yhUploadImages',
   props: {
@@ -64,16 +64,20 @@ export default {
     // 上传照片
     handlePhoto() {
       chooseImage(1, 'original', ['camera'])
-        .then(res => {
+        .then((res) => {
           console.log('接口调用成功', res);
-          const files = {
-            ...res.tempFiles[0],
-            id: 'yh_img_' + +new Date(),
-          };
-          this.images = [].concat(this.images).concat(files);
-          this.$emit('change', this.images);
+          if (res.duration >= 20) {
+            const files = {
+              ...res.tempFiles[0],
+              id: 'yh_img_' + +new Date(),
+            };
+            this.images = [].concat(this.images).concat(files);
+            this.$emit('change', this.images);
+          } else {
+            showToast('视频录制时间最低为20s')
+          }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log('接口调用失败', err);
         });
     },
@@ -88,7 +92,7 @@ export default {
     handlePreviewImage(index) {
       const data = this.images;
       const current = index + '';
-      const urls = data.map(item => {
+      const urls = data.map((item) => {
         return item.path;
       });
       previewImage(current, urls);
