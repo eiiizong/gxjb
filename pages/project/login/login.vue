@@ -10,10 +10,15 @@
           <view class="img-box">
             <img src="/static/images/login/icon-username.png" alt="" />
           </view>
-          <view>ID</view>
+          <view>账号</view>
         </view>
         <view class="input">
-          <input type="text" placeholder="请输入手机号码" v-model="account" />
+          <input
+            type="number"
+            maxlength="11"
+            placeholder="请输入手机号码"
+            v-model="account"
+          />
         </view>
       </view>
       <view class="input-wrapper">
@@ -64,19 +69,43 @@ export default {
       loginBtnText: '登陆',
       loginBtnIsLoading: false,
       loginBtnDisabled: false,
+      type: '',
     };
   },
   // 监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参）
-  onLoad() {},
+  onLoad(e) {
+    console.log(e, 123);
+    if (e.type) {
+      this.type = e.type;
+    }
+    getStorage('USER_ACCOUNT_INFO')
+      .then((res) => {
+        const data = JSON.parse(res.data);
+        const { account, password } = data;
+        this.account = account;
+        this.password = password;
+        // if (data.access_token) {
+        //   this.$store.commit(CHANGE_ACCESS_TOKEN, data.access_token);
+        //   this.$store.commit(CHANGE_USER_INFO, data);
+        //   if (!this.type) {
+        //     this.changeBtnStatus(true);
+        //     setTimeout(() => {
+        //       redirectTo(`/pages/project/home/home`);
+        //     }, 1000);
+        //   } else {
+        //     this.changeBtnStatus(false);
+        //   }
+        // }
+        if (!this.type) {
+          this.handleLogin();
+        }
+      })
+      .catch((err) => {});
+  },
   // 监听页面初次渲染完成
   onReady() {},
   // 监听页面显示
   onShow() {
-    getStorage('USER_ACCOUNT_INFO').then((res) => {
-      const { account, password } = JSON.parse(res.data);
-      this.account = account;
-      this.password = password;
-    });
     this.checkLogin();
   },
   // 监听页面隐藏
@@ -121,6 +150,8 @@ export default {
             setStorage(
               'USER_ACCOUNT_INFO',
               JSON.stringify({
+                ...res,
+                code: code,
                 account: this.account,
                 password: this.password,
               })

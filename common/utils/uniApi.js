@@ -78,9 +78,14 @@ const request = (
           `,
             res
           );
-          // if(res.statusCode === 200 && resData.status===config.certificationInvalidationStatusCode) {
-          //   redirectTo(config.loginPath)
-          // }
+          // 认证失效，请重新登录
+          if(res.statusCode === 200 && resData.status===config.certificationInvalidationStatusCode) {
+            showToast(resData.msg + '即将返回登陆页...');
+            setTimeout(() => {
+              redirectTo(config.loginPath)
+            },500)
+            return
+          }
           if (showMsgToast) {
             showToast(resData.msg);
           }
