@@ -38,7 +38,7 @@
 /**
  * 上传视频
  */
-import { chooseMedia } from '../../common/utils/uniApi';
+import { chooseMedia, chooseVideo } from '../../common/utils/uniApi';
 export default {
   name: 'yhUploadVideo',
   props: {
@@ -61,17 +61,30 @@ export default {
   methods: {
     // 上传视频 回调函数
     handleVideo() {
-      chooseMedia(1, ['video'], ['camera'], 30, ['original'], 'back')
-        .then(res => {
+      // chooseMedia(1, ['video'], ['camera'], 30, ['original'], 'back')
+      //   .then((res) => {
+      //     console.log('接口调用成功', res);
+      //     const files = {
+      //       ...res.tempFiles[0],
+      //       id: 'yh_' + +new Date(),
+      //     };
+      //     this.videoData = [].concat(this.videoData).concat(files);
+      //     this.$emit('change', this.videoData);
+      //   })
+      //   .catch((err) => {
+      //     console.log('接口调用失败', err);
+      //   });
+      chooseVideo(['camera', false, 60, 'back'])
+        .then((res) => {
           console.log('接口调用成功', res);
           const files = {
-            ...res.tempFiles[0],
-            id: 'yh_' + +new Date(),
+            ...res,
+            id: 'yh_video_' + +new Date(),
           };
           this.videoData = [].concat(this.videoData).concat(files);
           this.$emit('change', this.videoData);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log('接口调用失败', err);
         });
     },

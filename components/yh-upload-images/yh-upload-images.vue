@@ -68,7 +68,7 @@ export default {
           console.log('接口调用成功', res);
           const files = {
             ...res.tempFiles[0],
-            id: 'yh_' + +new Date(),
+            id: 'yh_img_' + +new Date(),
           };
           this.images = [].concat(this.images).concat(files);
           this.$emit('change', this.images);
