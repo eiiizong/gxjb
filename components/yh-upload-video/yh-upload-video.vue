@@ -38,7 +38,7 @@
 /**
  * 上传视频
  */
-import { chooseMedia, chooseVideo } from '../../common/utils/uniApi';
+import { chooseMedia, chooseVideo, showToast } from '../../common/utils/uniApi';
 export default {
   name: 'yhUploadVideo',
   props: {
@@ -77,12 +77,16 @@ export default {
       chooseVideo(['camera', false, 60, 'back'])
         .then((res) => {
           console.log('接口调用成功', res);
-          const files = {
-            ...res,
-            id: 'yh_video_' + +new Date(),
-          };
-          this.videoData = [].concat(this.videoData).concat(files);
-          this.$emit('change', this.videoData);
+          if (res.duration >= 20) {
+            const files = {
+              ...res,
+              id: 'yh_video_' + +new Date(),
+            };
+            this.videoData = [].concat(this.videoData).concat(files);
+            this.$emit('change', this.videoData);
+          } else {
+            showToast('视频录制时间最低为20s');
+          }
         })
         .catch((err) => {
           console.log('接口调用失败', err);

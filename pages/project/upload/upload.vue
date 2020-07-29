@@ -70,7 +70,6 @@
         <yhButton
           className="zdy-btn"
           @click="handleUpload"
-          :disabled="!checkUploadButtonCanUse"
           value="开始上传"
         ></yhButton>
       </div>
@@ -168,7 +167,6 @@ export default {
     },
     // 请求 创建巡检记录
     requestOrdersCreated() {
-      console.log('requestOrdersCreated');
       const url = 'orders/created';
       const header = {
         'access-token': this.accessToken,
@@ -267,8 +265,7 @@ export default {
     },
     // 上传按钮 回调函数
     handleUpload() {
-      showLoading('上传中...');
-      this.uploadImagesToServer();
+      this.checkCanUpload();
     },
     // 图片本地上传 回调
     handleUploadImagesChange(images) {
@@ -287,11 +284,8 @@ export default {
       const value = e.detail.value;
       this.adminListIndex = parseInt(value);
     },
-  },
-  computed: {
-    ...mapGetters([GET_ACCESS_TOKEN, GET_USER_INFO, GET_ADMIN_LIST]),
-    // 检测上传按钮是否可用
-    checkUploadButtonCanUse() {
+    // 检测上传
+    checkCanUpload() {
       let canUse = true;
       const address = this.address;
       const contract_no = this.contract_no;
@@ -303,26 +297,44 @@ export default {
 
       if (!addressRegion || addressRegion.length < 3) {
         canUse = false;
+        showToast('请完善巡检地点的内容后再开始上传！');
+        return
       }
       if (!address) {
         canUse = false;
+        showToast('请完善巡检地点的内容后再开始上传！');
+        return
       }
       if (adminListIndex < 0) {
         canUse = false;
+        showToast('请选择巡检审核人员后再开始上传！');
+        return
       }
 
       if (!contract_no) {
         canUse = false;
+        showToast('请完善巡检合同号后再开始上传！');
+        return
       }
 
       if (!uploadImages || uploadImages.length < 3) {
         canUse = false;
+        showToast('请拍摄3张照片后再开始上传！');
+        return
       }
       if (!uploadVideos || uploadVideos.length < 1) {
         canUse = false;
+        showToast('请录制视频后再开始上传！');
+        return
       }
-      return canUse;
+      if (canUse) {
+        showLoading('上传中...');
+        this.uploadImagesToServer();
+      }
     },
+  },
+  computed: {
+    ...mapGetters([GET_ACCESS_TOKEN, GET_USER_INFO, GET_ADMIN_LIST]),
   },
   watch: {},
 };
