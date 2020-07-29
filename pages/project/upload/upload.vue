@@ -174,7 +174,7 @@ export default {
         'access-token': this.accessToken,
       };
       const data = {
-        admin_id: this.userInfo.id,
+        admin_id: this.adminList[this.adminListIndex].admin_id,
         contract_no: this.contract_no,
         created_time: this.created_time,
         areas: this.addressRegion.join(''),
