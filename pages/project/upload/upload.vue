@@ -7,23 +7,10 @@
       </div>
       <div class="cell address">
         <div class="name">巡检地点</div>
-        <!-- <div class="select-address-wrapper">
-          <picker
-            class="picker-wrapper"
-            mode="region"
-            :value="addressRegion"
-            @change="handlePickerRegionChange"
-          >
-            <div class="picker">
-              <div class="text">{{ addressRegion | FormatAddress }}</div>
-              <div class="icon icon-arrow-right"></div>
-            </div>
-          </picker>
-        </div>
-        <div class="input-address-wrapper">
-          <input class="input" placeholder="请输入详细地址" v-model="address" />
-        </div> -->
-        <yhCurrentAddressMap :location="userLocation"></yhCurrentAddressMap>
+        <yhCurrentAddressMap
+          :location="userLocation"
+          @getAddress="handleGetAddress"
+        ></yhCurrentAddressMap>
       </div>
       <div class="cell info">
         <div class="name">巡检审核信息</div>
@@ -114,12 +101,10 @@ export default {
     return {
       // 选中审核人员序号
       adminListIndex: -1,
-      // 详细地址
-      address: '',
+      // 详细地址 信息
+      addressInfo: {},
       // 时间
       nowTime: '',
-      // 省市区
-      addressRegion: ['四川省', '成都市', '锦江区'],
       // 合同号
       contract_no: '',
       // 创建时间
@@ -144,24 +129,27 @@ export default {
   onShow() {
     this.nowTime = new Date();
     this.formatCreatedtime(this.nowTime);
-    getLocation()
-      .then((res) => {
-        this.userLocation = Object.assign(
-          {},
-          {
-            lat: parseFloat(res.latitude),
-            lng: parseFloat(res.longitude),
-          }
-        );
-        console.log(res, this.userLocation);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    this.getUserAddressInfo();
   },
   // 监听页面隐藏
   onHide() {},
   methods: {
+    // 获取用户地理位置
+    getUserAddressInfo() {
+      getLocation('gcj02')
+        .then((res) => {
+          this.userLocation = Object.assign(
+            {},
+            {
+              lat: parseFloat(res.latitude),
+              lng: parseFloat(res.longitude),
+            }
+          );
+        })
+        .catch((err) => {
+          this.userLocation = Object.assign({}, {});
+        });
+    },
     // 格式化创建时间
     formatCreatedtime(date) {
       let year = date.getFullYear();
@@ -197,8 +185,10 @@ export default {
         admin_id: this.adminList[this.adminListIndex].admin_id,
         contract_no: this.contract_no,
         created_time: this.created_time,
-        areas: this.addressRegion.join(''),
-        address: this.address,
+        areas: this.addressInfo.areas.join(''),
+        address: this.addressInfo.address,
+        lat: this.addressInfo.lat,
+        lng: this.addressInfo.lng,
         imgs: JSON.stringify(this.serveImages),
         videos: JSON.stringify(this.serveVideos),
       };
@@ -305,10 +295,6 @@ export default {
     handleUploadVideoChange(videos) {
       this.uploadVideos = [].concat(videos);
     },
-    // picker 地址选择 change
-    handlePickerRegionChange(e) {
-      this.addressRegion = [].concat(e.detail.value);
-    },
     // picker 审核人员 change
     handlePickerAuditorsChange(e) {
       const value = e.detail.value;
@@ -317,23 +303,16 @@ export default {
     // 检测上传
     checkCanUpload() {
       let canUse = true;
-      const address = this.address;
+      const addressInfo = this.addressInfo;
       const contract_no = this.contract_no;
       const adminListIndex = this.adminListIndex;
 
-      const addressRegion = this.addressRegion;
       const uploadImages = this.uploadImages;
       const uploadVideos = this.uploadVideos;
 
-      if (!addressRegion || addressRegion.length < 3) {
+      if (!addressInfo || !addressInfo.address) {
         canUse = false;
-        showToast('请完善巡检地点的内容后再开始上传！');
-        this.uploadBtnDisabled = false;
-        return;
-      }
-      if (!address) {
-        canUse = false;
-        showToast('请完善巡检地点的内容后再开始上传！');
+        showToast('无法获取您的地理位置,请检查后再开始上传！');
         this.uploadBtnDisabled = false;
         return;
       }
@@ -367,6 +346,11 @@ export default {
         showLoading('上传中...');
         this.uploadImagesToServer();
       }
+    },
+    // 子组件触发 传回地址信息
+    handleGetAddress(e) {
+      console.log('addressInfo', e);
+      this.addressInfo = Object.assign({}, e);
     },
   },
   computed: {

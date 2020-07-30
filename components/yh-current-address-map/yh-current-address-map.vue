@@ -1,16 +1,37 @@
 <template>
-  <view class="yh-current-address-map-wrapper">
-    <div class="yh-current-address-map">
-      <div class="address">{{ address }}</div>
-      <div class="map-wrapper">
-        <map
-          :longitude="location.lng"
-          :latitude="location.lat"
-          :show-location="true"
-          :markers="markers"
-        ></map>
+  <view class="yh-current-address-map-wrapper details">
+    <template v-if="!propAddress">
+      <div
+        class="yh-current-address-map"
+        v-if="location && location.lat && location.lng"
+      >
+        <div class="address">{{ address }}</div>
+        <div class="map-wrapper">
+          <map
+            :longitude="location.lng"
+            :latitude="location.lat"
+            :show-location="true"
+            :markers="markers"
+          ></map>
+        </div>
       </div>
-    </div>
+      <div class="no-open" v-else @click="handleGetAddressInfoError">
+        点击打开设置页允许获取地理位置权限
+      </div>
+    </template>
+    <template v-else>
+      <div class="yh-current-address-map">
+        <div class="address">{{ propAddress }}</div>
+        <div class="map-wrapper">
+          <map
+            :longitude="location.lng"
+            :latitude="location.lat"
+            :show-location="true"
+            :markers="markers"
+          ></map>
+        </div>
+      </div>
+    </template>
   </view>
 </template>
 
@@ -19,6 +40,7 @@
  * yh-current-address-map-wrapper
  * @description input输入框组件
  */
+import { openSetting } from '../../common/utils/uniApi';
 import qqMapWxJssdk from '@/common/utils/qqmap-wx-jssdk.min.js';
 export default {
   name: 'yhCurrentAddressMap',
@@ -27,29 +49,31 @@ export default {
       type: [Object],
       default: () => {
         return {
-          lat: 39.984060,
-          lng: 116.307520,
+          // lat: 39.984060,
+          // lng: 116.307520,
         };
       },
+    },
+    propAddress: {
+      type: [String],
+      default: '',
     },
   },
   data() {
     return {
       qqMap: null,
       address: '',
-      markers: [{}]
+      markers: [],
     };
   },
   created() {
     this.qqMap = new qqMapWxJssdk({
       key: 'LHCBZ-RHQH3-YPB3Z-YHXKO-IJ6XV-H3FQB',
     });
-    // this.reverseGeocoder(this.location);
   },
-  mounted() {
-    // console.log(this.$scopedSlots.prefix)
-  },
+  mounted() {},
   methods: {
+    // 根据经纬度获取位置
     reverseGeocoder(location) {
       const _this = this;
       this.qqMap.reverseGeocoder({
@@ -58,7 +82,19 @@ export default {
         get_poi: 0,
         // poi_options: '1',
         success(res) {
-          _this.address = res.result.address;
+          const address = res.result.address;
+          const addressComponent = res.result.address_component;
+          _this.address = address;
+          _this.$emit('getAddress', {
+            address: address,
+            lat: location.lat,
+            lng: location.lng,
+            areas: [
+              addressComponent.province,
+              addressComponent.city,
+              addressComponent.district,
+            ],
+          });
           console.log('reverseGeocoder', res);
         },
         fail(err) {
@@ -66,23 +102,31 @@ export default {
         },
       });
     },
+    // 处理错误 获取用户地理位置权限
+    handleGetAddressInfoError() {
+      openSetting();
+    },
   },
   computed: {},
   watch: {
     location(newData) {
-      console.log(newData);
+      console.log('父组件传入的经纬度: ', newData);
       if (newData && newData.lat && newData.lng) {
-        this.reverseGeocoder(newData);
+        if (!this.propAddress) {
+          this.reverseGeocoder(newData);
+        }
         this.markers = [
           {
             id: 1,
             latitude: newData.lat,
-            longitude	: newData.lng,
-            width: 32,
-            height: 32,
+            longitude: newData.lng,
+            width: 40,
+            height: 40,
             iconPath: 'https://s1.ax1x.com/2020/07/30/aKmTKg.png',
-          }
-        ]
+          },
+        ];
+      } else {
+        this.$emit('getAddress', {});
       }
     },
   },
@@ -103,6 +147,9 @@ view {
   font-size: 30rpx;
   color: #787979;
   line-height: 42rpx;
+  &.details {
+    padding-right: 0;
+  }
   .address {
     padding-top: 26rpx;
   }
@@ -115,6 +162,10 @@ view {
       width: 100%;
       height: 100%;
     }
+  }
+  .no-open {
+    padding-top: 26rpx;
+    color: #f22;
   }
 }
 </style>

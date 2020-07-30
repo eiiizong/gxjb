@@ -83,18 +83,7 @@ export default {
         const { account, password } = data;
         this.account = account;
         this.password = password;
-        // if (data.access_token) {
-        //   this.$store.commit(CHANGE_ACCESS_TOKEN, data.access_token);
-        //   this.$store.commit(CHANGE_USER_INFO, data);
-        //   if (!this.type) {
-        //     this.changeBtnStatus(true);
-        //     setTimeout(() => {
-        //       redirectTo(`/pages/project/home/home`);
-        //     }, 1000);
-        //   } else {
-        //     this.changeBtnStatus(false);
-        //   }
-        // }
+        // 第一次进入的时候登陆 没有 type
         if (!this.type) {
           this.handleLogin();
         }
@@ -149,8 +138,6 @@ export default {
             setStorage(
               'USER_ACCOUNT_INFO',
               JSON.stringify({
-                ...res,
-                code: code,
                 account: this.account,
                 password: this.password,
               })

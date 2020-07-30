@@ -13,9 +13,10 @@
       </div>
       <div class="cell address">
         <div class="name">巡检地点</div>
-        <div class="value">
+        <yhCurrentAddressMap :location="orderLocation" :propAddress="orderInfo.address"></yhCurrentAddressMap>
+        <!-- <div class="value">
           {{ orderInfo.areas + orderInfo.address }}
-        </div>
+        </div> -->
       </div>
       <div class="cell">
         <div class="name">审核人员</div>
@@ -80,6 +81,7 @@
 </template>
 
 <script>
+import yhCurrentAddressMap from '@/components/yh-current-address-map/yh-current-address-map';
 import {
   request,
   previewImage,
@@ -89,8 +91,10 @@ import {
 import { GET_ACCESS_TOKEN, GET_ADMIN_LIST } from '../../../store/types';
 import { mapGetters } from 'vuex';
 export default {
-  name: 'upload',
-  components: {},
+  name: 'uploadResult',
+  components: {
+    yhCurrentAddressMap
+  },
   data() {
     return {
       orderId: '',
@@ -101,6 +105,7 @@ export default {
       type: '',
       // 审核人员
       admin: {},
+      orderLocation: {}
     };
   },
   // 监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参）
@@ -139,6 +144,10 @@ export default {
       const method = 'POST';
       request(url, data, header, method)
         .then((res) => {
+          this.orderLocation = Object.assign({},{
+            lat: res.lat || 39,
+            lng: res.lng || 116,
+          })
           this.orderInfo = Object.assign({}, res);
           this.imagesData = JSON.parse(res.imgs).map((item, index) => {
             return {

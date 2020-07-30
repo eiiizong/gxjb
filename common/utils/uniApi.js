@@ -494,6 +494,23 @@ const getLocation = (
   });
 };
 /**
+ * 调起客户端小程序设置界面，返回用户设置的操作结果。设置界面只会出现小程序已经向用户请求过的权限。
+ * @param {Boolean} withSubscriptions 是否同时获取用户订阅消息的订阅状态，默认不获取。注意：withSubscriptions 只返回用户勾选过订阅面板中的“总是保持以上选择，不再询问”的订阅消息
+ */
+const openSetting = (withSubscriptions = false) => {
+  return new Promise((resolve, reject) => {
+    uni.openSetting({
+      withSubscriptions,
+      success(res) {
+        resolve(res);
+      },
+      fail(err) {
+        reject(err);
+      },
+    });
+  });
+};
+/**
  *  =============================================   以上api已根据微信官方接口确定注释参数类型    =======================
  */
 
@@ -738,6 +755,7 @@ export {
   removeStorage,
   clearStorage,
   getLocation,
+  openSetting,
   makePhoneCall,
   showToast,
   switchTab,
