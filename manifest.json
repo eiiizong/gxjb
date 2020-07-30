@@ -68,7 +68,7 @@
         "usingComponents" : true,
         "permission" : {
             "scope.userLocation" : {
-                "desc" : "用于获取您的位置信息,给予您更好的用户体验"
+                "desc" : "获取您的位置信息,用于定位您的巡店位置"
             }
         }
     },

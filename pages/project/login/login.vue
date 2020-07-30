@@ -1,7 +1,7 @@
 <template>
   <view class="login">
     <view class="bg">
-      <img src="/static/images/login/bg-header.png" alt="" />
+      <img src="/static/images/login/bg-header.jpg" alt="" />
     </view>
     <view class="content">
       <view class="hint">请用广告商账号登录</view>

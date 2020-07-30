@@ -7,7 +7,7 @@
       </div>
       <div class="cell address">
         <div class="name">巡检地点</div>
-        <div class="select-address-wrapper">
+        <!-- <div class="select-address-wrapper">
           <picker
             class="picker-wrapper"
             mode="region"
@@ -22,7 +22,8 @@
         </div>
         <div class="input-address-wrapper">
           <input class="input" placeholder="请输入详细地址" v-model="address" />
-        </div>
+        </div> -->
+        <yhCurrentAddressMap :location="userLocation"></yhCurrentAddressMap>
       </div>
       <div class="cell info">
         <div class="name">巡检审核信息</div>
@@ -82,6 +83,7 @@
 import yhButton from '@/components/yh-button/yh-button';
 import yhUploadImages from '@/components/yh-upload-images/yh-upload-images';
 import yhUploadVideo from '@/components/yh-upload-video/yh-upload-video';
+import yhCurrentAddressMap from '@/components/yh-current-address-map/yh-current-address-map';
 
 import {
   request,
@@ -91,6 +93,7 @@ import {
   hideLoading,
   showToast,
   redirectTo,
+  getLocation,
 } from '../../../common/utils/uniApi';
 
 import {
@@ -105,6 +108,7 @@ export default {
     yhButton,
     yhUploadImages,
     yhUploadVideo,
+    yhCurrentAddressMap,
   },
   data() {
     return {
@@ -127,7 +131,9 @@ export default {
       serveImages: [],
       serveVideos: [],
       // 上传按钮 disabled
-      uploadBtnDisabled: false
+      uploadBtnDisabled: false,
+      // 用户地理位置
+      userLocation: {},
     };
   },
   // 监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参）
@@ -138,7 +144,20 @@ export default {
   onShow() {
     this.nowTime = new Date();
     this.formatCreatedtime(this.nowTime);
-    this.requestUpload();
+    getLocation()
+      .then((res) => {
+        this.userLocation = Object.assign(
+          {},
+          {
+            lat: parseFloat(res.latitude),
+            lng: parseFloat(res.longitude),
+          }
+        );
+        console.log(res, this.userLocation);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   },
   // 监听页面隐藏
   onHide() {},
@@ -187,14 +206,14 @@ export default {
       request(url, data, header, method)
         .then((res) => {
           hideLoading();
-          this.uploadBtnDisabled = false
+          this.uploadBtnDisabled = false;
           redirectTo(
             `/pages/project/uploadResult/uploadResult?orderId=${res.id}&type=upload`
           );
         })
         .catch((err) => {
           showToast('上传失败');
-          this.uploadBtnDisabled = false
+          this.uploadBtnDisabled = false;
         });
     },
     // 请求 上传 img|video
@@ -254,28 +273,28 @@ export default {
                       this.requestOrdersCreated();
                     })
                     .catch((err) => {
-                      this.uploadBtnDisabled = false
+                      this.uploadBtnDisabled = false;
                       // console.log(err);
                     });
                 })
                 .catch((err) => {
-                  this.uploadBtnDisabled = false
+                  this.uploadBtnDisabled = false;
                   // console.log(err);
                 });
             })
             .catch((err) => {
-              this.uploadBtnDisabled = false
+              this.uploadBtnDisabled = false;
               // console.log(err);
             });
         })
         .catch((err) => {
-          this.uploadBtnDisabled = false
+          this.uploadBtnDisabled = false;
           // console.log(err);
         });
     },
     // 上传按钮 回调函数
     handleUpload() {
-      this.uploadBtnDisabled = true
+      this.uploadBtnDisabled = true;
       this.checkCanUpload();
     },
     // 图片本地上传 回调
@@ -309,40 +328,40 @@ export default {
       if (!addressRegion || addressRegion.length < 3) {
         canUse = false;
         showToast('请完善巡检地点的内容后再开始上传！');
-        this.uploadBtnDisabled = false
-        return
+        this.uploadBtnDisabled = false;
+        return;
       }
       if (!address) {
         canUse = false;
         showToast('请完善巡检地点的内容后再开始上传！');
-        this.uploadBtnDisabled = false
-        return
+        this.uploadBtnDisabled = false;
+        return;
       }
       if (adminListIndex < 0) {
         canUse = false;
         showToast('请选择巡检审核人员后再开始上传！');
-        this.uploadBtnDisabled = false
-        return
+        this.uploadBtnDisabled = false;
+        return;
       }
 
       if (!contract_no) {
         canUse = false;
         showToast('请完善巡检合同号后再开始上传！');
-        this.uploadBtnDisabled = false
-        return
+        this.uploadBtnDisabled = false;
+        return;
       }
 
       if (!uploadImages || uploadImages.length < 3) {
         canUse = false;
         showToast('请拍摄3张照片后再开始上传！');
-        this.uploadBtnDisabled = false
-        return
+        this.uploadBtnDisabled = false;
+        return;
       }
       if (!uploadVideos || uploadVideos.length < 1) {
         canUse = false;
         showToast('请录制视频后再开始上传！');
-        this.uploadBtnDisabled = false
-        return
+        this.uploadBtnDisabled = false;
+        return;
       }
       if (canUse) {
         showLoading('上传中...');

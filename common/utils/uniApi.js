@@ -79,12 +79,15 @@ const request = (
             res
           );
           // 认证失效，请重新登录
-          if(res.statusCode === 200 && resData.status===config.certificationInvalidationStatusCode) {
+          if (
+            res.statusCode === 200 &&
+            resData.status === config.certificationInvalidationStatusCode
+          ) {
             showToast(resData.msg + '即将返回登陆页...');
             setTimeout(() => {
-              redirectTo(config.loginPath)
-            },500)
-            return
+              redirectTo(config.loginPath);
+            }, 500);
+            return;
           }
           if (showMsgToast) {
             showToast(resData.msg);
@@ -466,7 +469,32 @@ const clearStorage = () => {
   });
 };
 /**
- *  ======================   以上api已根据微信官方接口确定注释参数类型    =======================
+ * 获取当前的地理位置、速度。当用户离开小程序后，此接口无法调用。开启高精度定位，接口耗时会增加，可指定 highAccuracyExpireTime 作为超时时间。地图相关使用的坐标格式应为 gcj02。
+ * @param {String} type wgs84 返回 gps 坐标，gcj02 返回可用于 wx.openLocation 的坐标
+ * @param {Boolean} altitude 传入 true 会返回高度信息，由于获取高度需要较高精确度，会减慢接口返回速度
+ * @param {Boolean} isHighAccuracy 开启高精度定位
+ */
+const getLocation = (
+  type = 'wgs84',
+  altitude = false,
+  isHighAccuracy = false
+) => {
+  return new Promise((resolve, reject) => {
+    uni.getLocation({
+      type,
+      altitude,
+      isHighAccuracy,
+      success(res) {
+        resolve(res);
+      },
+      fail(err) {
+        reject(err);
+      },
+    });
+  });
+};
+/**
+ *  =============================================   以上api已根据微信官方接口确定注释参数类型    =======================
  */
 
 /**
@@ -504,23 +532,7 @@ const switchTab = (url) => {
     });
   });
 };
-/**
- * 获取当前的地理位置、速度
- * @param {String} type
- */
-const getLocation = (type = 'wgs84') => {
-  return new Promise((resolve, reject) => {
-    uni.getLocation({
-      type,
-      success(res) {
-        resolve(res);
-      },
-      fail(err) {
-        reject(err);
-      },
-    });
-  });
-};
+
 /**
  * 打开地图选择位置
  * @param {*} latitude
@@ -725,11 +737,10 @@ export {
   getStorage,
   removeStorage,
   clearStorage,
-  
+  getLocation,
   makePhoneCall,
   showToast,
   switchTab,
-  getLocation,
   chooseLocation,
   openLocation,
   setNavigationBarColor,

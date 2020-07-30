@@ -166,15 +166,15 @@ export default {
     ...mapGetters([GET_ACCESS_TOKEN, GET_USER_INFO]),
   },
   watch: {
-    accessToken: {
-      handler(newVal, oldVal) {
-        if (newVal) {
-          this.requestUserCenter();
-          this.requestOrdersList();
-        }
-      },
-      immediate: true,
-    },
+    // accessToken: {
+    //   handler(newVal, oldVal) {
+    //     if (newVal && newVal !== oldVal) {
+    //       this.requestUserCenter();
+    //       this.requestOrdersList();
+    //     }
+    //   },
+    //   immediate: true,
+    // },
   },
 };
 </script>
