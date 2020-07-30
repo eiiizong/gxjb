@@ -146,12 +146,12 @@ export default {
               path: item,
             };
           });
-          this.videoData = [
-            {
-              id: 1,
-              tempFilePath: res.videos,
-            },
-          ];
+          this.videoData = JSON.parse(res.videos).map((item, index) => {
+            return {
+              id: 'video_' + +new Date() + index,
+              tempFilePath: item,
+            };
+          });
           this.adminList.filter((item) => {
             if (item.admin_id === res.admin_id) {
               this.admin = Object.assign({}, item);

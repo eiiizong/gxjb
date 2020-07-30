@@ -112,7 +112,7 @@ export default {
   methods: {
     // 登陆 回调函数
     handleLogin() {
-      console.log('登陆');
+      // console.log('登陆');
       this.changeBtnStatus(true);
       this.requestWechatLogin();
     },

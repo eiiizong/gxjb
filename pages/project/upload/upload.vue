@@ -70,6 +70,7 @@
         <yhButton
           className="zdy-btn"
           @click="handleUpload"
+          :disabled="uploadBtnDisabled"
           value="开始上传"
         ></yhButton>
       </div>
@@ -124,7 +125,9 @@ export default {
       // 上传的视频
       uploadVideos: [],
       serveImages: [],
-      serveVideos: '',
+      serveVideos: [],
+      // 上传按钮 disabled
+      uploadBtnDisabled: false
     };
   },
   // 监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参）
@@ -178,18 +181,21 @@ export default {
         areas: this.addressRegion.join(''),
         address: this.address,
         imgs: JSON.stringify(this.serveImages),
-        videos: this.serveVideos,
+        videos: JSON.stringify(this.serveVideos),
       };
       const method = 'POST';
       request(url, data, header, method)
         .then((res) => {
           hideLoading();
-          showToast('上传成功', 'success');
+          this.uploadBtnDisabled = false
           redirectTo(
             `/pages/project/uploadResult/uploadResult?orderId=${res.id}&type=upload`
           );
         })
-        .catch((err) => {});
+        .catch((err) => {
+          showToast('上传失败');
+          this.uploadBtnDisabled = false
+        });
     },
     // 请求 上传 img|video
     requestUpload(type, name, filePath) {
@@ -213,9 +219,9 @@ export default {
                 this.serveImages.push(resultData.src);
               }
               if (resultData.object === 'video') {
-                this.serveVideos = resultData.src;
+                this.serveVideos.push(resultData.src);
               }
-              console.log('上传成功', name, res, data);
+              // console.log('上传成功', name, res, data);
               resolve(data);
             } else {
               hideLoading();
@@ -224,7 +230,7 @@ export default {
             }
           })
           .catch((err) => {
-            console.log('上传失败', name, err);
+            // console.log('上传失败', name, err);
             reject(err);
           });
       });
@@ -248,23 +254,28 @@ export default {
                       this.requestOrdersCreated();
                     })
                     .catch((err) => {
-                      console.log(err);
+                      this.uploadBtnDisabled = false
+                      // console.log(err);
                     });
                 })
                 .catch((err) => {
-                  console.log(err);
+                  this.uploadBtnDisabled = false
+                  // console.log(err);
                 });
             })
             .catch((err) => {
-              console.log(err);
+              this.uploadBtnDisabled = false
+              // console.log(err);
             });
         })
         .catch((err) => {
-          console.log(err);
+          this.uploadBtnDisabled = false
+          // console.log(err);
         });
     },
     // 上传按钮 回调函数
     handleUpload() {
+      this.uploadBtnDisabled = true
       this.checkCanUpload();
     },
     // 图片本地上传 回调
@@ -298,33 +309,39 @@ export default {
       if (!addressRegion || addressRegion.length < 3) {
         canUse = false;
         showToast('请完善巡检地点的内容后再开始上传！');
+        this.uploadBtnDisabled = false
         return
       }
       if (!address) {
         canUse = false;
         showToast('请完善巡检地点的内容后再开始上传！');
+        this.uploadBtnDisabled = false
         return
       }
       if (adminListIndex < 0) {
         canUse = false;
         showToast('请选择巡检审核人员后再开始上传！');
+        this.uploadBtnDisabled = false
         return
       }
 
       if (!contract_no) {
         canUse = false;
         showToast('请完善巡检合同号后再开始上传！');
+        this.uploadBtnDisabled = false
         return
       }
 
       if (!uploadImages || uploadImages.length < 3) {
         canUse = false;
         showToast('请拍摄3张照片后再开始上传！');
+        this.uploadBtnDisabled = false
         return
       }
       if (!uploadVideos || uploadVideos.length < 1) {
         canUse = false;
         showToast('请录制视频后再开始上传！');
+        this.uploadBtnDisabled = false
         return
       }
       if (canUse) {

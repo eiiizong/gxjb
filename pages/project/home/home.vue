@@ -61,6 +61,7 @@ import {
   redirectTo,
   navigateTo,
   hideHomeButton,
+  showToast,
 } from '../../../common/utils/uniApi';
 
 import {
@@ -123,7 +124,10 @@ export default {
       const method = 'POST';
       request(url, data, header, method)
         .then((res) => {
-          redirectTo(`/pages/project/login/login?type=loginOut`);
+          showToast('退出成功')
+          setTimeout(() => {
+            redirectTo(`/pages/project/login/login?type=loginOut`);
+          }, 1000);
         })
         .catch((err) => {});
     },
@@ -143,7 +147,7 @@ export default {
     },
     // 退出登陆 回调函数
     handleLoginOut() {
-      console.log('退出登陆');
+      // console.log('退出登陆');
       this.requestLogout();
     },
     // 创建新的巡检记录 回调函数
