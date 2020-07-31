@@ -1,36 +1,40 @@
 <template>
-  <view class="yh-current-address-map-wrapper details">
+  <view
+    class="yh-current-address-map-wrapper"
+    :class="[propAddress ? 'details' : '']"
+  >
     <template v-if="!propAddress">
-      <div
+      <view
         class="yh-current-address-map"
         v-if="location && location.lat && location.lng"
       >
-        <div class="address">{{ address }}</div>
-        <div class="map-wrapper">
+        <view class="address" v-if="address">{{ address }}</view>
+        <view class="address" v-else @click="reRequest">{{ errorMessage }}</view>
+        <view class="map-wrapper" v-if="address">
           <map
             :longitude="location.lng"
             :latitude="location.lat"
             :show-location="true"
             :markers="markers"
           ></map>
-        </div>
-      </div>
-      <div class="no-open" v-else @click="handleGetAddressInfoError">
+        </view>
+      </view>
+      <view class="no-open" v-else @click="handleGetAddressInfoError">
         点击打开设置页允许获取地理位置权限
-      </div>
+      </view>
     </template>
     <template v-else>
-      <div class="yh-current-address-map">
-        <div class="address">{{ propAddress }}</div>
-        <div class="map-wrapper">
+      <view class="yh-current-address-map">
+        <view class="address">{{ propAddress }}</view>
+        <view class="map-wrapper">
           <map
             :longitude="location.lng"
             :latitude="location.lat"
             :show-location="true"
             :markers="markers"
           ></map>
-        </div>
-      </div>
+        </view>
+      </view>
     </template>
   </view>
 </template>
@@ -40,7 +44,7 @@
  * yh-current-address-map-wrapper
  * @description input输入框组件
  */
-import { openSetting } from '../../common/utils/uniApi';
+import { openSetting, showToast,showLoading, hideLoading } from '../../common/utils/uniApi';
 import qqMapWxJssdk from '@/common/utils/qqmap-wx-jssdk.min.js';
 export default {
   name: 'yhCurrentAddressMap',
@@ -64,6 +68,8 @@ export default {
       qqMap: null,
       address: '',
       markers: [],
+      // 错误信息
+      errorMessage: ''
     };
   },
   created() {
@@ -76,6 +82,11 @@ export default {
     // 根据经纬度获取位置
     reverseGeocoder(location) {
       const _this = this;
+      if(!location || !location.lat || !location.lng) {
+        hideLoading()
+        showToast('解析地址参数不正确')
+        return
+      }
       this.qqMap.reverseGeocoder({
         location: `${location.lat},${location.lng}`,
         coord_type: 1,
@@ -95,10 +106,15 @@ export default {
               addressComponent.district,
             ],
           });
+          hideLoading()
+          showToast('解析地址成功')
           console.log('reverseGeocoder', res);
         },
         fail(err) {
-          console.log(err, 100000);
+          hideLoading()
+          showToast('解析地址失败')
+          _this.address = '';
+          _this.errorMessage = '解析地址错误,点击重新解析!';
         },
       });
     },
@@ -106,6 +122,11 @@ export default {
     handleGetAddressInfoError() {
       openSetting();
     },
+    // 重新请求
+    reRequest() {
+      showLoading('正在解析...')
+      reverseGeocoder(this.location)
+    }
   },
   computed: {},
   watch: {
@@ -135,7 +156,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '../../common/styles/scss/variable';
-text,
+
 map,
 view {
   box-sizing: border-box;
