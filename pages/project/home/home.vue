@@ -39,7 +39,7 @@
             @click="handlehistoryListItem(item.id || item)"
           >
             <div class="time">{{ item.created_at | FormatTime }}</div>
-            <div class="address">{{ item.areas + item.address }}</div>
+            <div class="address">{{ item.address }}</div>
             <div class="img-box">
               <img src="/static/images/home/icon-upload-ok.png" alt="" />
             </div>
