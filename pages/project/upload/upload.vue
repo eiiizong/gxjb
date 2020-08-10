@@ -122,13 +122,14 @@ export default {
     };
   },
   // 监听页面加载，其参数为上个页面传递的数据，参数类型为Object（用于页面传参）
-  onLoad() {},
+  onLoad() {
+    this.nowTime = new Date();
+    this.formatCreatedtime(this.nowTime);
+  },
   // 监听页面初次渲染完成
   onReady() {},
   // 监听页面显示
   onShow() {
-    this.nowTime = new Date();
-    this.formatCreatedtime(this.nowTime);
     this.getUserAddressInfo();
   },
   // 监听页面隐藏
@@ -221,7 +222,6 @@ export default {
         uploadFile(url, filePath, name, header, data)
           .then((res) => {
             const data = JSON.parse(res.data);
-
             if (res.statusCode === 200 && data.status === '200') {
               const resultData = data.data;
               if (resultData.object === 'img') {
@@ -230,57 +230,65 @@ export default {
               if (resultData.object === 'video') {
                 this.serveVideos.push(resultData.src);
               }
-              // console.log('上传成功', name, res, data);
               resolve(data);
             } else {
               hideLoading();
               showToast('上传失败');
+              this.uploadBtnDisabled = false;
               reject(res);
             }
           })
           .catch((err) => {
-            // console.log('上传失败', name, err);
+            hideLoading();
+            showToast('上传失败');
+            this.uploadBtnDisabled = false;
             reject(err);
           });
       });
     },
     // 图片上传至服务器
-    uploadImagesToServer() {
+    async uploadImagesToServer() {
       const images = this.uploadImages;
+      const len = images.length;
+      if (images instanceof Array && len > 0) {
+        for (let i = 0; i < len; i++) {
+          const item = images[i];
+          showLoading(`上传图片${i + 1}/${len}`);
+          const imagesRes = await this.requestUpload(
+            'img',
+            item.id + i,
+            item.path
+          );
+          // console.log(imagesRes, 'images');
+        }
+        this.uploadVideosToServer();
+      } else {
+        hideLoading();
+        showToast('上传失败');
+        this.uploadBtnDisabled = false;
+      }
+    },
+    // 视频上传至服务器
+    async uploadVideosToServer() {
       const videos = this.uploadVideos;
-      this.requestUpload('img', images[0].id + '_1', images[0].path)
-        .then((res) => {
-          this.requestUpload('img', images[1].id + '_2', images[1].path)
-            .then((res) => {
-              this.requestUpload('img', images[2].id + '_3', images[2].path)
-                .then((res) => {
-                  this.requestUpload(
-                    'video',
-                    videos[0].id + '_4',
-                    videos[0].tempFilePath
-                  )
-                    .then((res) => {
-                      this.requestOrdersCreated();
-                    })
-                    .catch((err) => {
-                      this.uploadBtnDisabled = false;
-                      // console.log(err);
-                    });
-                })
-                .catch((err) => {
-                  this.uploadBtnDisabled = false;
-                  // console.log(err);
-                });
-            })
-            .catch((err) => {
-              this.uploadBtnDisabled = false;
-              // console.log(err);
-            });
-        })
-        .catch((err) => {
-          this.uploadBtnDisabled = false;
-          // console.log(err);
-        });
+      const len = videos.length;
+      if (videos instanceof Array && len > 0) {
+        for (let i = 0; i < len; i++) {
+          const item = videos[i];
+          showLoading(`上传视频${i + 1}/${len}`);
+          const videosRes = await this.requestUpload(
+            'video',
+            item.id + i,
+            item.tempFilePath
+          );
+          // console.log(videosRes, 'video');
+        }
+        this.requestOrdersCreated();
+      } else {
+        hideLoading();
+        showToast('上传失败');
+        this.uploadBtnDisabled = false;
+      }
     },
     // 上传按钮 回调函数
     handleUpload() {
@@ -343,13 +351,12 @@ export default {
         return;
       }
       if (canUse) {
-        showLoading('上传中...');
         this.uploadImagesToServer();
       }
     },
     // 子组件触发 传回地址信息
     handleGetAddress(e) {
-      console.log('addressInfo', e);
+      // console.log('addressInfo', e);
       this.addressInfo = Object.assign({}, e);
     },
   },

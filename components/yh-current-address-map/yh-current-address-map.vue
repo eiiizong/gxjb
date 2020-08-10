@@ -9,7 +9,9 @@
         v-if="location && location.lat && location.lng"
       >
         <view class="address" v-if="address">{{ address }}</view>
-        <view class="address" v-else @click="reRequest">{{ errorMessage }}</view>
+        <view class="address" v-else @click="reRequest">{{
+          errorMessage
+        }}</view>
         <view class="map-wrapper" v-if="address">
           <map
             :longitude="location.lng"
@@ -44,7 +46,12 @@
  * yh-current-address-map-wrapper
  * @description input输入框组件
  */
-import { openSetting, showToast,showLoading, hideLoading } from '../../common/utils/uniApi';
+import {
+  openSetting,
+  showToast,
+  showLoading,
+  hideLoading,
+} from '../../common/utils/uniApi';
 import qqMapWxJssdk from '@/common/utils/qqmap-wx-jssdk.min.js';
 export default {
   name: 'yhCurrentAddressMap',
@@ -69,7 +76,7 @@ export default {
       address: '',
       markers: [],
       // 错误信息
-      errorMessage: ''
+      errorMessage: '',
     };
   },
   created() {
@@ -82,10 +89,10 @@ export default {
     // 根据经纬度获取位置
     reverseGeocoder(location) {
       const _this = this;
-      if(!location || !location.lat || !location.lng) {
-        hideLoading()
-        showToast('解析地址参数不正确')
-        return
+      if (!location || !location.lat || !location.lng) {
+        hideLoading();
+        showToast('解析地址参数不正确');
+        return;
       }
       this.qqMap.reverseGeocoder({
         location: `${location.lat},${location.lng}`,
@@ -106,13 +113,13 @@ export default {
               addressComponent.district,
             ],
           });
-          hideLoading()
-          showToast('解析地址成功')
+          hideLoading();
+          // showToast('解析地址成功');
           console.log('reverseGeocoder', res);
         },
         fail(err) {
-          hideLoading()
-          showToast('解析地址失败')
+          hideLoading();
+          showToast('解析地址失败');
           _this.address = '';
           _this.errorMessage = '解析地址错误,点击重新解析!';
         },
@@ -124,15 +131,19 @@ export default {
     },
     // 重新请求
     reRequest() {
-      showLoading('正在解析...')
-      reverseGeocoder(this.location)
-    }
+      showLoading('正在解析...');
+      reverseGeocoder(this.location);
+    },
   },
   computed: {},
   watch: {
-    location(newData) {
+    location(newData, oldData) {
       console.log('父组件传入的经纬度: ', newData);
       if (newData && newData.lat && newData.lng) {
+        // 相同经纬度 不在请求数据
+        if (newData.lat === oldData.lat && newData.lng === oldData.lng) {
+          return;
+        }
         if (!this.propAddress) {
           this.reverseGeocoder(newData);
         }
