@@ -77,6 +77,8 @@ export default {
       markers: [],
       // 错误信息
       errorMessage: '',
+      // 是否刷新地址
+      isRefresh: true,
     };
   },
   created() {
@@ -127,7 +129,10 @@ export default {
     },
     // 处理错误 获取用户地理位置权限
     handleGetAddressInfoError() {
-      openSetting();
+      openSetting().then((res) => {
+        // 打开设置页 可刷新
+        this.isRefresh = true;
+      });
     },
     // 重新请求
     reRequest() {
@@ -144,7 +149,9 @@ export default {
         if (newData.lat === oldData.lat && newData.lng === oldData.lng) {
           return;
         }
-        if (!this.propAddress) {
+        // 确保只刷新一次
+        if (!this.propAddress && this.isRefresh) {
+          this.isRefresh = false;
           this.reverseGeocoder(newData);
         }
         this.markers = [
